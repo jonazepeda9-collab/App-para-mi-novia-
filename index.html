@@ -31,6 +31,30 @@
             position: relative;
         }
 
+        /* Botón de Administrador Discreto */
+        .admin-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: white;
+        }
+
         /* Pantalla de bloqueo / Cuenta regresiva */
         #lock-screen {
             position: fixed;
@@ -86,7 +110,7 @@
             text-transform: uppercase;
         }
 
-        /* Contenido principal de la app (Oculto hasta la fecha) */
+        /* Contenido principal de la app */
         #main-content {
             display: none;
             width: 100%;
@@ -95,7 +119,6 @@
             background: white;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative;
-            display: flex;
             flex-direction: column;
         }
 
@@ -119,7 +142,6 @@
             overflow-y: auto;
         }
 
-        /* Secciones */
         .section-card {
             background: var(--bg-color);
             border-radius: 15px;
@@ -137,7 +159,6 @@
             gap: 8px;
         }
 
-        /* Carta */
         .letter-content {
             white-space: pre-line;
             font-size: 0.95rem;
@@ -145,7 +166,6 @@
             color: #4a0e17;
         }
 
-        /* Galería */
         .gallery-scroll {
             display: flex;
             gap: 10px;
@@ -153,7 +173,7 @@
             padding-bottom: 10px;
         }
 
-        .gallery-scroll iframe, .gallery-scroll img {
+        .gallery-scroll img {
             width: 220px;
             height: 280px;
             object-fit: cover;
@@ -163,7 +183,6 @@
             background: #eee;
         }
 
-        /* Razones */
         .reason-box {
             background: white;
             padding: 12px 15px;
@@ -173,27 +192,14 @@
             border-left: 4px solid var(--primary);
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-
-        /* Corazones flotantes de fondo */
-        .heart {
-            position: absolute;
-            color: rgba(255, 77, 109, 0.3);
-            animation: floatUp 4s linear infinite;
-            z-index: 0;
-            font-size: 1.5rem;
-            user-select: none;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla de Cuenta Regresiva Estricta -->
+    <!-- Botón Admin Secreto en la esquina superior derecha -->
+    <button class="admin-btn" onclick="openAdmin()" title="Panel Admin">⚙️</button>
+
+    <!-- Pantalla de Cuenta Regresiva -->
     <div id="lock-screen">
         <h1>Para Mi Hermosa Mildred 💖</h1>
         <p>Esta sorpresa se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
@@ -207,7 +213,7 @@
     </div>
 
     <!-- Contenido Principal de la App -->
-    <div id="main-content" style="display: none;">
+    <div id="main-content">
         <header>
             <h1>¡Feliz Cumpleaños!</h1>
             <p>6 años y 8 meses de caminar juntos 🐺♥️</p>
@@ -219,7 +225,7 @@
                 <h2>💌 Carta para ti</h2>
                 <div class="letter-content">¡Feliz cumpleaños, hermosa!
 ​La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
-​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
+​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por agutanarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
 ​Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
 ​Te amo muchísimo. ¡A celebrar!
 
@@ -230,7 +236,6 @@ Te Lobo 🐺 ♥️</div>
             <div class="section-card">
                 <h2>📸 Nuestros Recuerdos</h2>
                 <div class="gallery-scroll">
-                    <!-- 38 Fotos integradas -->
                     <a href="https://photos.app.goo.gl/Bk4FoJzSy47o7Zk46" target="_blank"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" alt="Recuerdo"></a>
                     <a href="https://photos.app.goo.gl/rWARAbWrpVeDxjBe8" target="_blank"><img src="https://images.unsplash.com/photo-1522748955767-123479b47e17?w=400" alt="Recuerdo"></a>
                     <a href="https://photos.app.goo.gl/xZ1cvUDQmZBjzJkv5" target="_blank"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400" alt="Recuerdo"></a>
@@ -356,17 +361,15 @@ Te Lobo 🐺 ♥️</div>
         </div>
     </div>
 
-    <!-- Script de Cuenta Regresiva -->
+    <!-- Scripts de Control y Cuenta Regresiva -->
     <script>
-        // Fecha exacta: 9 de noviembre de 2026 a las 11:11 AM
         const targetDate = new Date("November 9, 2026 11:11:00").getTime();
 
-        const timer = setInterval(() => {
+        function checkCountdown() {
             const now = new Date().getTime();
             const difference = targetDate - now;
 
             if (difference <= 0) {
-                clearInterval(timer);
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("main-content").style.display = "flex";
             } else {
@@ -380,8 +383,22 @@ Te Lobo 🐺 ♥️</div>
                 document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
                 document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
             }
-        }, 1000);
+        }
+
+        // Función del Botón Admin para desbloquear y revisar
+        function openAdmin() {
+            const pass = prompt("Introduce la contraseña de administrador:");
+            if (pass === "Milybeb3*") {
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "flex";
+                alert("¡Modo Administrador activado con éxito! Ya puedes revisar toda la página.");
+            } else if (pass !== null) {
+                alert("Contraseña incorrecta.");
+            }
+        }
+
+        setInterval(checkCountdown, 1000);
+        checkCountdown();
     </script>
 </body>
 </html>
-
