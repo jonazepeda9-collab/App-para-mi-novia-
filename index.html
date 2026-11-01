@@ -3,131 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti, Mildred ❤️</title>
+    <title>Para mi amor, Mildred 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --primary-color: #ff4d6d;
-            --secondary-color: #ff758c;
+            --primary: #ff4d6d;
+            --secondary: #ff758f;
+            --accent: #c9184a;
             --bg-color: #fff0f3;
-            --text-color: #333;
+            --card-bg: #ffffff;
+            --text-color: #590d22;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
             color: var(--text-color);
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Botón de Administrador Discreto */
+        .admin-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        /* Pantalla de bloqueo / Cuenta regresiva */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff758f, #ff4d6d, #c9184a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
             text-align: center;
+            padding: 25px;
+        }
+
+        #lock-screen h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        #lock-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 350px;
+            line-height: 1.5;
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px 10px;
+            border-radius: 14px;
+            min-width: 70px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .countdown-box span {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .countdown-box label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Contenido principal de la App */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background: var(--card-bg);
+            box-shadow: 0 0 30px rgba(89, 13, 34, 0.15);
+            position: relative;
+            flex-direction: column;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            padding: 2rem 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
-        h1 {
-            margin: 0;
-            font-size: 2.2rem;
+        header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.2rem;
+            margin-bottom: 5px;
         }
 
-        section {
-            padding: 2rem 1rem;
-            max-width: 900px;
-            margin: 0 auto;
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            font-weight: 300;
         }
 
-        /* Estilo para la sección de galería y las imágenes al 100% */
-        .gallery-container {
+        /* Reproductor de Música Flotante en la app */
+        .music-player {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .music-player button {
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .music-player span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .container {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Carta Dinámica tipo Sobre */
+        .envelope-card {
+            background: linear-gradient(135deg, #ff758f, #ff4d6d);
+            border-radius: 18px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .envelope-card:active {
+            transform: scale(0.97);
+        }
+
+        .envelope-card h3 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .letter-modal {
+            display: none;
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.15);
+            border: 2px solid var(--secondary);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter-content {
+            white-space: pre-line;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #4a0e17;
+            margin-top: 10px;
+        }
+
+        .close-letter {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            float: right;
+            margin-top: 10px;
+        }
+
+        /* Estilo Intercalado: Foto y Razón */
+        .dynamic-item {
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.08);
+            border: 1px solid rgba(255, 117, 143, 0.2);
+        }
+
+        .dynamic-item img {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .dynamic-item p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* --- NUEVA ÁREA DE GALERÍA DE RECUERDOS (Imágenes al 100% / object-fit: contain) --- */
+        .gallery-section {
+            background: var(--bg-color);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.08);
+            border: 1px solid rgba(255, 117, 143, 0.2);
+        }
+
+        .gallery-section h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            padding: 20px 0;
-            width: 100%;
-            box-sizing: border-box;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
         }
 
-        .gallery-item {
-            width: 100%;
-            height: 300px;
-            background-color: #000;
+        .gallery-card {
+            background: #000;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            height: 180px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .gallery-item img {
+        .gallery-card img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Asegura que la foto se vea completa sin deformarse ni recortarse */
-            transition: transform 0.3s ease;
+            object-fit: contain; /* Garantiza que la imagen se vea al 100% completa sin recortarse */
+            transition: transform 0.3s;
         }
 
-        .gallery-item img:hover {
-            transform: scale(1.03);
+        .gallery-card img:hover {
+            transform: scale(1.05);
         }
 
-        .audio-player {
-            margin: 2rem 0;
+        /* Bloque para las demás razones */
+        .section-card {
+            background: var(--bg-color);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.08);
+            border: 1px solid rgba(255, 117, 143, 0.2);
         }
 
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
+        .section-card h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .reason-box {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             font-size: 0.9rem;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            line-height: 1.5;
+        }
+
+        /* Sección de Cupones de Amor Canjeables */
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .coupon-card {
+            background: white;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+        }
+
+        .coupon-card:hover {
+            background: #fff0f3;
+            transform: scale(1.02);
+        }
+
+        .coupon-card h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .coupon-card p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Contador de Segundos de Amor (Pie de página) */
+        .love-seconds-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.2);
+        }
+
+        .love-seconds-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .love-seconds-card span {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Corazones flotantes de fondo */
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2);
+            animation: floatUp 6s linear infinite;
+            bottom: -20px;
+            font-size: 1.5rem;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Para el amor de mi vida ❤️</h1>
-        <p>Cada segundo a tu lado es un regalo</p>
-    </header>
+    <!-- Botón Admin Secreto -->
+    <button class="admin-btn" onclick="openAdmin()" title="Panel Admin">⚙️</button>
 
-    <!-- Reproductor de Música -->
-    <section class="audio-player">
-        <h2>Nuestra Canción</h2>
-        <audio controls autoplay loop>
-            <source src="videoplayback.webm" type="audio/webm">
-            Tu navegador no soporta el elemento de audio.
-        </audio>
-    </section>
+    <!-- Reproductor de audio apuntando a tu archivo de música local (cancion.mp3) -->
+    <audio id="bg-music" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
 
-    <!-- Sección de Galería de Recuerdos -->
-    <section id="galeria-recuerdos">
-        <h2>Nuestros Recuerdos Juntos</h2>
-        <p>Un pequeño recorrido por los momentos que hemos compartido.</p>
-        
-        <div class="gallery-container">
-            <div class="gallery-item">
-                <img src="IMG-20210402-WA0030.jpg" alt="Recuerdo especial">
+    <!-- Pantalla de Cuenta Regresiva -->
+    <div id="lock-screen">
+        <div class="floating-hearts">
+            <span class="heart-particle" style="left: 10%; animation-delay: 0s;">💖</span>
+            <span class="heart-particle" style="left: 30%; animation-delay: 2s;">✨</span>
+            <span class="heart-particle" style="left: 50%; animation-delay: 4s;">🐺</span>
+            <span class="heart-particle" style="left: 70%; animation-delay: 1s;">♥️</span>
+            <span class="heart-particle" style="left: 90%; animation-delay: 3s;">💖</span>
+        </div>
+        <h1 style="position: relative; z-index: 2;">Para Mi Hermosa Mildred 💖</h1>
+        <p style="position: relative; z-index: 2;">Esta sorpresa se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
+        <div class="countdown-container" style="position: relative; z-index: 2;">
+            <div class="countdown-box"><span id="days">00</span><label>Días</label></div>
+            <div class="countdown-box"><span id="hours">00</span><label>Horas</label></div>
+            <div class="countdown-box"><span id="minutes">00</span><label>Min</label></div>
+            <div class="countdown-box"><span id="seconds">00</span><label>Seg</label></div>
+        </div>
+        <p style="font-size: 0.9rem; opacity: 0.9; position: relative; z-index: 2;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
+    </div>
+
+    <!-- Contenido Principal de la App -->
+    <div id="main-content">
+        <header>
+            <h1>Feliz vuelta al sol 🌞</h1>
+            <p id="life-time">Calculando tiempo de vida...</p>
+            
+            <!-- Reproductor de música -->
+            <div class="music-player">
+                <button id="play-music-btn" onclick="toggleMusic()">▶</button>
+                <span id="music-status">Nuestra canción</span>
             </div>
-            <div class="gallery-item">
-                <img src="IMG-20210403-WA0030.jpg" alt="Recuerdo especial">
+        </header>
+
+        <div class="container">
+            <!-- Carta Interactiva tipo Sobre -->
+            <div class="envelope-card" onclick="toggleLetter()">
+                <h3>💌 Toca para abrir tu carta</h3>
+                <p style="font-size: 0.85rem; opacity: 0.9;">Un mensaje especial para ti</p>
             </div>
-            <div class="gallery-item">
-                <img src="IMG-20220601-WA0015.jpg" alt="Recuerdo especial">
+
+            <!-- Contenido oculto de la carta -->
+            <div id="letter-box" class="letter-modal">
+                <h3 style="color: var(--accent); font-family: 'Great Vibes', cursive; font-size: 2rem;">Para mi amor</h3>
+                <div class="letter-content">¡Feliz cumpleaños, hermosa!
+​La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
+​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
+​Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
+​Te amo muchísimo. ¡A celebrar!
+
+Te Lobo 🐺 ♥️</div>
+                <button class="close-letter" onclick="toggleLetter()">Cerrar carta</button>
             </div>
-            <div class="gallery-item">
-                <img src="IMG-20220601-WA0016.jpg" alt="Recuerdo especial">
+
+            <!-- Dinamismo Intercalado: Fotos principales -->
+            <div class="dynamic-item">
+                <img src="IMG-20210402-WA0030.jpg" alt="Recuerdo">
+                <p>1. Por lo dulce que es cuando me regala una sonrisa.</p>
             </div>
-            <div class="gallery-item">
-                <img src="IMG-20220716-WA0084.jpg" alt="Recuerdo especial">
+
+            <div class="dynamic-item">
+                <img src="IMG-20220601-WA0015.jpg" alt="Recuerdo">
+                <p>2. Por su sinceridad, porque sé que siempre me habla con la verdad.</p>
             </div>
-            <div class="gallery-item">
-                <img src="IMG-20221205-WA0021.jpg" alt="Recuerdo especial">
+
+            <div class="dynamic-item">
+                <img src="IMG-20220716-WA0084.jpg" alt="Recuerdo">
+                <p>3. Por lo dedicada que es en todo lo que se propone.</p>
+            </div>
+
+            <div class="dynamic-item">
+                <img src="IMG-20221205-WA0021.jpg" alt="Recuerdo">
+                <p>4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.</p>
+            </div>
+
+            <!-- NUEVA ÁREA DE GALERÍA DE RECUERDOS (Todas tus fotos del repositorio al 100%) -->
+            <div class="gallery-section">
+                <h2>📸 Galería de Recuerdos</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-card"><img src="20200531_172821.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="20200614_173856.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="20200913_180545.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="20200919_162758.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="20200923_213559.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20210403-WA0030.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20210502-WA0003.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20210502-WA0005.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20210502-WA0008.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20211224-WA0009.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20220601-WA0016.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20220601-WA0022.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20220716-WA0085.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20230415-WA0083.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20230430-WA0018.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20230430-WA0022.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20230709-WA0004.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG-20230919-WA0027.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_1029.png" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_1076.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_1471.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201004_172732.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201005_195210.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201101_131830_1.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201101_150054.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201101_150219.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201102_145054_1.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201102_145649.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20201224_230051.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20210101_021447.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20210131_170109.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20210401_151049.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20210403_152702.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20211009_192537.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20220320_130650.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20220321_170951.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20220409_130904.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20220617_230050474.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20221001_184936281.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20221202_222700283.jpg" alt="Recuerdo"></div>
+                    <div class="gallery-card"><img src="IMG_20230114_091326300.jpg" alt="Recuerdo"></div>
+                </div>
+            </div>
+
+            <!-- Sección de las demás razones -->
+            <div class="section-card">
+                <h2>✨ Razones por las cuales te amo</h2>
+                <div class="reason-box">5. Por cómo se enoja de forma tierna cuando algo no le sale como quiere (enojona).</div>
+                <div class="reason-box">6. Por lo tierna que puede llegar a ser de la nada.</div>
+                <div class="reason-box">7. Por su gran sensibilidad ante las cosas que le importan.</div>
+                <div class="reason-box">8. Por el amor tan puro y el respeto tan grande que le tiene a los perros.</div>
+                <div class="reason-box">9. Por la empatía y el dolor genuino que siente ante cualquier caso de maltrato animal.</div>
+                <div class="reason-box">10. Por lo mucho que le encantan los gatos y cómo los consiente.</div>
+                <div class="reason-box">11. Por lo linda que es en absolutamente todo lo que hace respecto a mí.</div>
+                <div class="reason-box">12. Por lo atenta que es con los pequeños y grandes detalles.</div>
+                <div class="reason-box">13. Por lo bien que me conoce.</div>
+                <div class="reason-box">14. Por cómo equilibra su fuerza con su enorme sensibilidad.</div>
+                <div class="reason-box">15. Por la pasión que le pone a las cosas que le apasionan.</div>
+                <div class="reason-box">16. Por cómo se ve cuando está concentrada haciendo algo.</div>
+                <div class="reason-box">17. Por lo noble de su corazón, incluso cuando intenta ponerse brava.</div>
+                <div class="reason-box">18. Por cómo defiende lo que cree con tanta convicción.</div>
+                <div class="reason-box">19. Por su bondad infinita hacia los animales y los seres indefensos.</div>
+                <div class="reason-box">20. Por la ternura con la que trata a sus mascotas.</div>
+                <div class="reason-box">21. Por cómo se ilumina su cara cuando ve a un perrito o un gatito en la calle.</div>
+                <div class="reason-box">22. Por lo genuina que es su risa cuando realmente la hago reír.</div>
+                <div class="reason-box">23. Por la paz que me transmite su presencia a pesar de su carácter fuerte.</div>
+                <div class="reason-box">24. Por ser exactamente como es, sin intentar cambiar para encajar en ningún lado.</div>
+                <div class="reason-box">25. Por cómo cuida de mí cuando más lo necesito.</div>
+                <div class="reason-box">26. Por las atenciones diarias que demuestran cuánto le importo.</div>
+                <div class="reason-box">27. Por el hecho de que me conoce tan bien que sabe cuando algo me pasa con solo verme.</div>
+                <div class="reason-box">28. Por cómo se preocupa por mi bienestar y mi felicidad.</div>
+                <div class="reason-box">29. Por los mensajes inesperados que alegran cualquiera de mis días.</div>
+                <div class="reason-box">30. Por cómo celebra mis logros como si fueran suyos.</div>
+                <div class="reason-box">31. Por la paciencia que me tiene en mis días difíciles.</div>
+                <div class="reason-box">32. Por cómo ha estado a mi lado durante todo este tiempo juntos.</div>
+                <div class="reason-box">33. Por la confianza que hemos construido paso a paso.</div>
+                <div class="reason-box">34. Por ser mi refugio seguro después de un día pesado.</div>
+                <div class="reason-box">35. Por cómo me escucha sin juzgarme.</div>
+                <div class="reason-box">36. Por los abrazos que tienen el poder de arreglar cualquier mal momento.</div>
+                <div class="reason-box">37. Por la forma en que me mira cuando cree que no me doy cuenta.</div>
+                <div class="reason-box">38. Por cómo me incluye en sus planes y en su vida.</div>
+                <div class="reason-box">39. Por ser mi cómplice en cada ocurrencia y aventura.</div>
+                <div class="reason-box">40. Por la lealtad inquebrantable que me demuestra todos los días.</div>
+                <div class="reason-box">41. Por cómo respeta mi espacio y apoya mis metas.</div>
+                <div class="reason-box">42. Por los recuerdos tan bonitos que hemos creado juntos a lo largo de estos más de 6 años.</div>
+                <div class="reason-box">43. Por la forma en que se esfuerza para que nuestra relación funcione y crezca.</div>
+                <div class="reason-box">44. Por cómo convierte un día ordinario en algo especial con solo estar ahí.</div>
+                <div class="reason-box">45. Por el cariño tan sincero que me transmite con un simple toque.</div>
+                <div class="reason-box">46. Por cómo me defiende y me apoya ante el mundo.</div>
+                <div class="reason-box">47. Por las pláticas largas donde podemos hablar de todo y de nada.</div>
+                <div class="reason-box">48. Por la seguridad que siento al saber que nos tenemos el uno al otro.</div>
+                <div class="reason-box">49. Por ser, simplemente, mi persona favorita en el mundo.</div>
+                <div class="reason-box">50. Por su carita de "enojada" que en realidad me da risa de lo tierna que se ve.</div>
+                <div class="reason-box">51. Por cómo arruga la nariz cuando algo no le parece o se concentra.</div>
+                <div class="reason-box">52. Por la forma en que cuida cada detalle de las cosas que hace por mí.</div>
+                <div class="reason-box">53. Por sus pucheros cuando quiere conseguir algo o se hace la difícil.</div>
+                <div class="reason-box">54. Por la manera en que se acurruca conmigo cuando tenemos tiempo para descansar.</div>
+                <div class="reason-box">55. Por cómo reacciona cuando ve videos de perritos rescatados o gatitos tiernos.</div>
+                <div class="reason-box">56. Por sus manitas y cómo se siente tomarlas entre las mías.</div>
+                <div class="reason-box">57. Por los apodos y bromas internas que solo nosotros entendemos.</div>
+                <div class="reason-box">58. Por cómo se emociona cuando algo le sale bien o le gusta mucho.</div>
+                <div class="reason-box">59. Por su forma de caminar y sus gestos tan característicos.</div>
+                <div class="reason-box">60. Por cómo se ve por las mañanas recién despierta.</div>
+                <div class="reason-box">61. Por el empeño que pone cuando quiere darme una sorpresa o un detalle.</div>
+                <div class="reason-box">62. Por cómo se pone cuando le coqueteo o le digo cosas bonitas.</div>
+                <div class="reason-box">63. Por la paciencia con la que tolera mis propias manías.</div>
+                <div class="reason-box">64. Por cómo comparte conmigo lo que le gusta y lo que le disgusta.</div>
+                <div class="reason-box">65. Por los suspiros que suelta cuando está cansada pero contenta.</div>
+                <div class="reason-box">66. Por la forma en que se acomoda en el carro o en el sillón a mi lado.</div>
+                <div class="reason-box">67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.</div>
+                <div class="reason-box">68. Por su risa contagiosa que se escucha desde el fondo de su alma.</div>
+                <div class="reason-box">69. Por cómo cuida de sus cosas y de su entorno con esmero.</div>
+                <div class="reason-box">70. Por la ternura con la que me regaña cuando hago alguna tontería.</div>
+                <div class="reason-box">71. Por cómo se despide de mí y cómo me recibe después de vernos.</div>
+                <div class="reason-box">72. Por los silencios compartidos que nunca se sienten incómodos con ella.</div>
+                <div class="reason-box">73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.</div>
+                <div class="reason-box">74. Por la mujer tan chingona y admirable en la que se ha convertido.</div>
+                <div class="reason-box">75. Por cómo enfrenta los retos de la vida sin cobardía.</div>
+                <div class="reason-box">76. Por los valores tan firmes que rigen su vida y sus acciones, y por ser mi todo.</div>
+                <div style="text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);">Te amo muchísimo, Mildred 🐺♥️</div>
+            </div>
+
+            <!-- Sección de Cupones de Amor Canjeables -->
+            <div class="section-card">
+                <h2>🎟️ Cupones de Amor Canjeables</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #666;">Toca cualquier cupón para canjearlo conmigo:</p>
+                <div class="coupon-grid">
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una cita en tu restaurante favorito! 🍔')">
+                        <h4>Cita en tu restaurante favorito</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un masaje relajante y apapachos sin límite! 🥰')">
+                        <h4>Masaje relajante</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió para elegir la película o serie sin pretextos! 🍿')">
+                        <h4>Elegir la película/serie</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta Final: Segundos que hemos pasado juntos -->
+            <div class="love-seconds-card">
+                <h3>Segundos que hemos pasado juntos</h3>
+                <span id="love-seconds">0</span>
             </div>
         </div>
-    </section>
+    </div>
 
-    <footer>
-        <p>Hecho con todo el amor del mundo para ti 💖</p>
-    </footer>
+    <!-- Scripts -->
+    <script>
+        // Control de música
+        let isPlaying = false;
+        function toggleMusic() {
+            const music = document.getElementById("bg-music");
+            const btn = document.getElementById("play-music-btn");
+            const status = document.getElementById("music-status");
+            
+            if (isPlaying) {
+                music.pause();
+                btn.innerText = "▶";
+                status.innerText = "Música pausada";
+                isPlaying = false;
+            } else {
+                music.play().then(() => {
+                    btn.innerText = "⏸";
+                    status.innerText = "Reproduciendo amor...";
+                    isPlaying = true;
+                }).catch(e => {
+                    console.log("Audio play blocked by browser", e);
+                    alert("Toca la pantalla o el botón de nuevo para iniciar la reproducción de audio.");
+                });
+            }
+        }
 
+        // Canjear cupones
+        function claimCoupon(element, message) {
+            alert(message);
+            element.style.opacity = "0.5";
+            element.style.background = "#ffe5ec";
+            element.querySelector("p").innerText = "¡Canjeado con éxito! ❤️";
+        }
+
+        // Efecto de Confeti al desbloquear
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff758f', '#ffffff', '#c9184a']
+            });
+        }
+
+        // Calcular tiempo de vida desde el 9 de noviembre de 1998 a las 11:11 AM
+        function calculateLifeTime() {
+            const birthDate = new Date(1998, 10, 9, 11, 11, 0);
+            const now = new Date();
+            
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            document.getElementById("life-time").innerText = `${years} años, ${months} meses y ${days} días de vida 🌟`;
+        }
+
+        // Calcular segundos transcurridos desde el 14 de febrero de 2020
+        function updateLoveSeconds() {
+            const loveStartDate = new Date("February 14, 2020 00:00:00").getTime();
+            const now = new Date().getTime();
+            const secondsTogether = Math.floor((now - loveStartDate) / 1000);
+            
+            document.getElementById("love-seconds").innerText = secondsTogether.toLocaleString();
+        }
+
+        // Abrir/Cerrar Carta Dinámica
+        function toggleLetter() {
+            const letterBox = document.getElementById("letter-box");
+            if (letterBox.style.display === "block") {
+                letterBox.style.display = "none";
+            } else {
+                letterBox.style.display = "block";
+                letterBox.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Cuenta regresiva estricta
+        const targetDate = new Date("November 9, 2026 11:11:00").getTime();
+
+        function checkCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "flex";
+                calculateLifeTime();
+                updateLoveSeconds();
+                triggerConfetti();
+            } else {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days).padStart(2, '0');
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            }
+        }
+
+        function openAdmin() {
+            const pass = prompt("Introduce la contraseña de administrador:");
+            if (pass === "Milybeb3*") {
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "flex";
+                calculateLifeTime();
+                updateLoveSeconds();
+                triggerConfetti();
+                alert("¡Modo Administrador activado con éxito!");
+            } else if (pass !== null) {
+                alert("Contraseña incorrecta.");
+            }
+        }
+
+        setInterval(() => {
+            checkCountdown();
+            updateLoveSeconds();
+        }, 1000);
+        
+        checkCountdown();
+    </script>
 </body>
 </html>
-
