@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para mi amor, Mildred 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #ff4d6d;
@@ -147,6 +148,39 @@
             font-weight: 300;
         }
 
+        /* Reproductor de Música Flotante */
+        .music-player {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .music-player button {
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .music-player span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
         .container {
             padding: 20px;
             flex: 1;
@@ -236,7 +270,7 @@
         }
 
         .dynamic-item p {
-            font-size: 0.95ln;
+            font-size: 0.95rem;
             color: var(--text-color);
             font-weight: 500;
         }
@@ -272,6 +306,64 @@
             line-height: 1.5;
         }
 
+        /* Sección de Cupones de Amor Canjeables */
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .coupon-card {
+            background: white;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+        }
+
+        .coupon-card:hover {
+            background: #fff0f3;
+            transform: scale(1.02);
+        }
+
+        .coupon-card h4 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .coupon-card p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Contador de Segundos de Amor (Pie de página) */
+        .love-seconds-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.2);
+        }
+
+        .love-seconds-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .love-seconds-card span {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
         /* Corazones flotantes de fondo */
         .floating-hearts {
             position: absolute;
@@ -304,6 +396,12 @@
     <!-- Botón Admin Secreto -->
     <button class="admin-btn" onclick="openAdmin()" title="Panel Admin">⚙️</button>
 
+    <!-- Reproductor de audio con tu canción subida -->
+    <audio id="bg-music" loop>
+        <source src="videoplayback.webm" type="audio/webm">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
     <!-- Pantalla de Cuenta Regresiva -->
     <div id="lock-screen">
         <div class="floating-hearts">
@@ -328,7 +426,13 @@
     <div id="main-content">
         <header>
             <h1>Feliz vuelta al sol 🌞</h1>
-            <p id="time-together">Calculando tiempo juntos...</p>
+            <p id="life-time">Calculando tiempo de vida...</p>
+            
+            <!-- Reproductor de música -->
+            <div class="music-player">
+                <button id="play-music-btn" onclick="toggleMusic()">▶</button>
+                <span id="music-status">Nuestra canción</span>
+            </div>
         </header>
 
         <div class="container">
@@ -351,24 +455,24 @@ Te Lobo 🐺 ♥️</div>
                 <button class="close-letter" onclick="toggleLetter()">Cerrar carta</button>
             </div>
 
-            <!-- Dinamismo Intercalado: Foto ➔ Razón 1 ➔ Foto ➔ Razón 2 -->
+            <!-- Dinamismo Intercalado: Usando tus fotos subidas a GitHub -->
             <div class="dynamic-item">
-                <a href="https://photos.app.goo.gl/Bk4FoJzSy47o7Zk46" target="_blank"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500" alt="Recuerdo"></a>
+                <img src="IMG-20210402-WA0030.jpg" alt="Recuerdo">
                 <p>1. Por lo dulce que es cuando me regala una sonrisa.</p>
             </div>
 
             <div class="dynamic-item">
-                <a href="https://photos.app.goo.gl/rWARAbWrpVeDxjBe8" target="_blank"><img src="https://images.unsplash.com/photo-1522748955767-123479b47e17?w=500" alt="Recuerdo"></a>
+                <img src="IMG-20220601-WA0015.jpg" alt="Recuerdo">
                 <p>2. Por su sinceridad, porque sé que siempre me habla con la verdad.</p>
             </div>
 
             <div class="dynamic-item">
-                <a href="https://photos.app.goo.gl/xZ1cvUDQmZBjzJkv5" target="_blank"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500" alt="Recuerdo"></a>
+                <img src="IMG-20220601-WA0016.jpg" alt="Recuerdo">
                 <p>3. Por lo dedicada que es en todo lo que se propone.</p>
             </div>
 
             <div class="dynamic-item">
-                <a href="https://photos.app.goo.gl/Yt5BDVv8sP4ALhUA9" target="_blank"><img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=500" alt="Recuerdo"></a>
+                <img src="IMG-20220601-WA0022.jpg" alt="Recuerdo">
                 <p>4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.</p>
             </div>
 
@@ -409,7 +513,7 @@ Te Lobo 🐺 ♥️</div>
                 <div class="reason-box">36. Por los abrazos que tienen el poder de arreglar cualquier mal momento.</div>
                 <div class="reason-box">37. Por la forma en que me mira cuando cree que no me doy cuenta.</div>
                 <div class="reason-box">38. Por cómo me incluye en sus planes y en su vida.</div>
-                <div class="reason-box">39. Por ser mi cómplice en каждый ocurrencia y aventura.</div>
+                <div class="reason-box">39. Por ser mi cómplice en cada ocurrencia y aventura.</div>
                 <div class="reason-box">40. Por la lealtad inquebrantable que me demuestra todos los días.</div>
                 <div class="reason-box">41. Por cómo respeta mi espacio y apoya mis metas.</div>
                 <div class="reason-box">42. Por los recuerdos tan bonitos que hemos creado juntos a lo largo de estos más de 6 años.</div>
@@ -440,7 +544,7 @@ Te Lobo 🐺 ♥️</div>
                 <div class="reason-box">67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.</div>
                 <div class="reason-box">68. Por su risa contagiosa que se escucha desde el fondo de su alma.</div>
                 <div class="reason-box">69. Por cómo cuida de sus cosas y de su entorno con esmero.</div>
-                <div class="reason-box">70. Por la ternura con la que regaña cuando hago alguna tontería.</div>
+                <div class="reason-box">70. Por la ternura con la que me regaña cuando hago alguna tontería.</div>
                 <div class="reason-box">71. Por cómo se despide de mí y cómo me recibe después de vernos.</div>
                 <div class="reason-box">72. Por los silencios compartidos que nunca se sienten incómodos con ella.</div>
                 <div class="reason-box">73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.</div>
@@ -449,19 +553,87 @@ Te Lobo 🐺 ♥️</div>
                 <div class="reason-box">76. Por los valores tan firmes que rigen su vida y sus acciones, y por ser mi todo.</div>
                 <div style="text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);">Te amo muchísimo, Mildred 🐺♥️</div>
             </div>
+
+            <!-- Sección de Cupones de Amor Canjeables -->
+            <div class="section-card">
+                <h2>🎟️ Cupones de Amor Canjeables</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #666;">Toca cualquier cupón para canjearlo conmigo:</p>
+                <div class="coupon-grid">
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una cita en tu restaurante favorito! 🍔')">
+                        <h4>Cita en tu restaurante favorito</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un masaje relajante y apapachos sin límite! 🥰')">
+                        <h4>Masaje relajante</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió para elegir la película o serie sin pretextos! 🍿')">
+                        <h4>Elegir la película/serie</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta Final: Segundos que hemos pasado juntos -->
+            <div class="love-seconds-card">
+                <h3>Segundos que hemos pasado juntos</h3>
+                <span id="love-seconds">0</span>
+            </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script>
-        // Calcular tiempo desde el 14 de febrero de 2020
-        function calculateTimeTogether() {
-            const startDate = new Date(2020, 1, 14); // 14 de febrero de 2020
+        // Control de música
+        let isPlaying = false;
+        function toggleMusic() {
+            const music = document.getElementById("bg-music");
+            const btn = document.getElementById("play-music-btn");
+            const status = document.getElementById("music-status");
+            
+            if (isPlaying) {
+                music.pause();
+                btn.innerText = "▶";
+                status.innerText = "Música pausada";
+                isPlaying = false;
+            } else {
+                music.play().then(() => {
+                    btn.innerText = "⏸";
+                    status.innerText = "Reproduciendo amor...";
+                    isPlaying = true;
+                }).catch(e => {
+                    console.log("Audio play blocked by browser", e);
+                    alert("Toca la pantalla o el botón de nuevo para iniciar la reproducción de audio.");
+                });
+            }
+        }
+
+        // Canjear cupones
+        function claimCoupon(element, message) {
+            alert(message);
+            element.style.opacity = "0.5";
+            element.style.background = "#ffe5ec";
+            element.querySelector("p").innerText = "¡Canjeado con éxito! ❤️";
+        }
+
+        // Efecto de Confeti al desbloquear
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff758f', '#ffffff', '#c9184a']
+            });
+        }
+
+        // Calcular tiempo de vida desde el 9 de noviembre de 1998 a las 11:11 AM
+        function calculateLifeTime() {
+            const birthDate = new Date(1998, 10, 9, 11, 11, 0);
             const now = new Date();
             
-            let years = now.getFullYear() - startDate.getFullYear();
-            let months = now.getMonth() - startDate.getMonth();
-            let days = now.getDate() - startDate.getDate();
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
 
             if (days < 0) {
                 months--;
@@ -473,7 +645,16 @@ Te Lobo 🐺 ♥️</div>
                 months += 12;
             }
 
-            document.getElementById("time-together").innerText = `${years} años, ${months} meses y ${days} días juntos 🐺♥️`;
+            document.getElementById("life-time").innerText = `${years} años, ${months} meses y ${days} días de vida 🌟`;
+        }
+
+        // Calcular segundos transcurridos desde el 14 de febrero de 2020
+        function updateLoveSeconds() {
+            const loveStartDate = new Date("February 14, 2020 00:00:00").getTime();
+            const now = new Date().getTime();
+            const secondsTogether = Math.floor((now - loveStartDate) / 1000);
+            
+            document.getElementById("love-seconds").innerText = secondsTogether.toLocaleString();
         }
 
         // Abrir/Cerrar Carta Dinámica
@@ -497,7 +678,9 @@ Te Lobo 🐺 ♥️</div>
             if (difference <= 0) {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("main-content").style.display = "flex";
-                calculateTimeTogether();
+                calculateLifeTime();
+                updateLoveSeconds();
+                triggerConfetti();
             } else {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -516,14 +699,20 @@ Te Lobo 🐺 ♥️</div>
             if (pass === "Milybeb3*") {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("main-content").style.display = "flex";
-                calculateTimeTogether();
+                calculateLifeTime();
+                updateLoveSeconds();
+                triggerConfetti();
                 alert("¡Modo Administrador activado con éxito!");
             } else if (pass !== null) {
                 alert("Contraseña incorrecta.");
             }
         }
 
-        setInterval(checkCountdown, 1000);
+        setInterval(() => {
+            checkCountdown();
+            updateLoveSeconds();
+        }, 1000);
+        
         checkCountdown();
     </script>
 </body>
