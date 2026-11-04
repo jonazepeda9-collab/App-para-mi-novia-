@@ -11,9 +11,8 @@
             --primary: #ff4d6d;
             --secondary: #ff758f;
             --accent: #c9184a;
-            --bg-color: #fff0f3;
-            --card-bg: #ffffff;
-            --text-color: #590d22;
+            --bg-color: #0b0005;
+            --text-color: #fff0f3;
         }
 
         * {
@@ -24,12 +23,9 @@
         }
 
         body {
-            background: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+            background-color: var(--bg-color);
             color: var(--text-color);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow-x: hidden;
             position: relative;
         }
@@ -39,7 +35,7 @@
             position: fixed;
             top: 15px;
             right: 15px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             border-radius: 50%;
             width: 42px;
@@ -47,7 +43,7 @@
             font-size: 1.2rem;
             cursor: pointer;
             z-index: 10000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -61,7 +57,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ff758f, #ff4d6d, #c9184a);
+            background: linear-gradient(135deg, #1a0008, #4a0e17, #c9184a);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -76,7 +72,7 @@
             font-family: 'Great Vibes', cursive;
             font-size: 3.8rem;
             margin-bottom: 15px;
-            text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+            text-shadow: 2px 3px 6px rgba(0,0,0,0.5);
         }
 
         #lock-screen p {
@@ -93,13 +89,12 @@
         }
 
         .countdown-box {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.15);
             padding: 12px 10px;
             border-radius: 14px;
             min-width: 70px;
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .countdown-box span {
@@ -114,216 +109,197 @@
             letter-spacing: 1px;
         }
 
-        /* Contenido principal de la App */
+        /* Contenido Principal (Galaxia 3D y sección inferior) */
         #main-content {
             display: none;
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            background: var(--card-bg);
-            box-shadow: 0 0 30px rgba(89, 13, 34, 0.15);
-            position: relative;
             flex-direction: column;
+            width: 100%;
+            min-height: 100vh;
         }
 
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-        }
-
-        header h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 3.2rem;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 0.95rem;
-            opacity: 0.95;
-            font-weight: 300;
-        }
-
-        /* Reproductor de Música Personalizado con Playlist */
-        .music-player {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            padding: 10px 15px;
-            border-radius: 16px;
+        /* Contenedor de la Galaxia 3D */
+        #galaxy-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1f0010 0%, #050002 100%);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
-            margin-top: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            justify-content: center;
         }
 
-        .music-controls {
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .galaxy-header {
+            position: absolute;
+            top: 20px;
+            z-index: 3;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .galaxy-header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #ff758f;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+        }
+
+        /* Botón central en el corazón (Da click aquí) */
+        .heart-center-btn {
+            position: absolute;
+            z-index: 4;
+            background: rgba(201, 24, 74, 0.85);
+            border: 2px solid #ff758f;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 77, 109, 0.8);
+            animation: pulseHeart 2s infinite;
+            text-align: center;
+        }
+
+        .heart-center-btn:hover {
+            background: #ff4d6d;
+            transform: scale(1.05);
+        }
+
+        @keyframes pulseHeart {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 77, 109, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+        }
+
+        /* Reproductor de Música Flotante */
+        .music-float {
+            position: absolute;
+            bottom: 25px;
+            z-index: 4;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .music-controls button {
+        .music-float button {
             background: white;
             border: none;
             border-radius: 50%;
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             color: var(--accent);
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-        }
-
-        .music-controls button:active {
-            transform: scale(0.9);
         }
 
         #music-status {
             font-size: 0.8rem;
-            font-weight: 500;
+            max-width: 200px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 280px;
         }
 
-        .container {
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
+        /* Sección de contenido inferior (Carta, Galería horizontal, Cupones) */
+        .content-sections {
+            background: #140308;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        /* Carta Dinámica tipo Sobre */
-        .envelope-card {
-            background: linear-gradient(135deg, #ff758f, #ff4d6d);
-            border-radius: 18px;
+        /* Modal / Carta de amor */
+        .letter-container {
+            background: linear-gradient(135deg, #2a0812, #1a0208);
+            border: 1px solid var(--secondary);
+            border-radius: 20px;
             padding: 25px;
-            text-align: center;
-            color: white;
-            margin-bottom: 20px;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.2);
-            transition: transform 0.2s;
-        }
-
-        .envelope-card:active {
-            transform: scale(0.97);
-        }
-
-        .envelope-card h3 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-        }
-
-        .letter-modal {
-            display: none;
-            background: white;
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.15);
-            border: 2px solid var(--secondary);
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.15);
         }
 
         .letter-content {
             white-space: pre-line;
             font-size: 0.95rem;
             line-height: 1.7;
-            color: #4a0e17;
-            margin-top: 10px;
+            color: #ffccd5;
+            margin-top: 15px;
+            display: none;
         }
 
-        .close-letter {
-            background: var(--primary);
+        .letter-toggle-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 10px 20px;
             border-radius: 20px;
-            font-size: 0.8rem;
             cursor: pointer;
-            float: right;
+            font-weight: 600;
             margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
         }
 
-        /* Estilo Intercalado: Fotos Principales */
-        .dynamic-item {
-            background: var(--bg-color);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.08);
-            border: 1px solid rgba(255, 117, 143, 0.2);
-        }
-
-        .dynamic-item img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            background-color: #000;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .dynamic-item p {
-            font-size: 0.95rem;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        /* --- ÁREA DE GALERÍA DE RECUERDOS --- */
+        /* Galería de Recuerdos Horizontal (Scroll a la derecha) */
         .gallery-section {
-            background: var(--bg-color);
-            border-radius: 18px;
+            background: #1a040b;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.08);
             border: 1px solid rgba(255, 117, 143, 0.2);
         }
 
         .gallery-section h2 {
-            font-size: 1.25rem;
-            color: var(--accent);
+            color: var(--secondary);
+            font-size: 1.3rem;
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
         }
 
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
+        .horizontal-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
 
         .gallery-card {
+            min-width: 200px;
+            height: 250px;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            height: 180px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -333,126 +309,69 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.3s;
         }
 
-        .gallery-card img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Bloque para las demás razones */
-        .section-card {
-            background: var(--bg-color);
-            border-radius: 18px;
+        /* Sección de Cupones */
+        .coupon-section {
+            background: #1a040b;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.08);
             border: 1px solid rgba(255, 117, 143, 0.2);
         }
 
-        .section-card h2 {
-            font-size: 1.25rem;
-            color: var(--accent);
+        .coupon-section h2 {
+            color: var(--secondary);
+            font-size: 1.3rem;
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
         }
 
-        .reason-box {
-            background: white;
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
-            line-height: 1.5;
-        }
-
-        /* Sección de Cupones de Amor Canjeables */
         .coupon-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
         }
 
         .coupon-card {
-            background: white;
+            background: #260710;
             border: 2px dashed var(--secondary);
             border-radius: 12px;
             padding: 15px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s;
         }
 
         .coupon-card:hover {
-            background: #fff0f3;
             transform: scale(1.02);
+            background: #330a16;
         }
 
         .coupon-card h4 {
-            color: var(--accent);
-            font-size: 1rem;
+            color: var(--secondary);
             margin-bottom: 5px;
         }
 
         .coupon-card p {
             font-size: 0.8rem;
-            color: #666;
+            color: #aaa;
         }
 
-        /* Contador de Segundos de Amor */
+        /* Contador de Segundos */
         .love-seconds-card {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            border-radius: 18px;
-            padding: 20px;
+            background: linear-gradient(135deg, #c9184a, #590d22);
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
-            color: white;
-            margin-top: 20px;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.2);
-        }
-
-        .love-seconds-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            font-weight: 500;
+            border: 1px solid var(--secondary);
         }
 
         .love-seconds-card span {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 600;
+            color: #fff;
+            display: block;
+            margin-top: 8px;
             letter-spacing: 1px;
-        }
-
-        /* Corazones flotantes de fondo */
-        .floating-hearts {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .heart-particle {
-            position: absolute;
-            color: rgba(255, 77, 109, 0.2);
-            animation: floatUp 6s linear infinite;
-            bottom: -20px;
-            font-size: 1.5rem;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.6); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
@@ -463,86 +382,61 @@
 
     <!-- Pantalla de Cuenta Regresiva -->
     <div id="lock-screen">
-        <div class="floating-hearts">
-            <span class="heart-particle" style="left: 10%; animation-delay: 0s;">💖</span>
-            <span class="heart-particle" style="left: 30%; animation-delay: 2s;">✨</span>
-            <span class="heart-particle" style="left: 50%; animation-delay: 4s;">🐺</span>
-            <span class="heart-particle" style="left: 70%; animation-delay: 1s;">♥️</span>
-            <span class="heart-particle" style="left: 90%; animation-delay: 3s;">💖</span>
-        </div>
-        <h1 style="position: relative; z-index: 2;">Para Mi Hermosa Mildred 💖</h1>
-        <p style="position: relative; z-index: 2;">Esta sorpresa se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
-        <div class="countdown-container" style="position: relative; z-index: 2;">
+        <h1>Para Mi Hermosa Mildred 💖</h1>
+        <p>Esta sorpresa galáctica se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
+        <div class="countdown-container">
             <div class="countdown-box"><span id="days">00</span><label>Días</label></div>
             <div class="countdown-box"><span id="hours">00</span><label>Horas</label></div>
             <div class="countdown-box"><span id="minutes">00</span><label>Min</label></div>
             <div class="countdown-box"><span id="seconds">00</span><label>Seg</label></div>
         </div>
-        <p style="font-size: 0.9rem; opacity: 0.9; position: relative; z-index: 2;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
+        <p style="font-size: 0.9rem; opacity: 0.9;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
     </div>
 
-    <!-- Contenido Principal de la App -->
+    <!-- Contenido Principal -->
     <div id="main-content">
-        <header>
-            <h1>Feliz vuelta al sol 🌞</h1>
-            <p id="life-time">Calculando tiempo de vida...</p>
-            
-            <!-- Reproductor de música múltiple corregido -->
-            <div class="music-player">
-                <div class="music-controls">
-                    <button onclick="prevSong()" title="Anterior">⏮</button>
-                    <button id="play-music-btn" onclick="toggleMusic()" title="Play/Pausa">▶</button>
-                    <button onclick="nextSong()" title="Siguiente">⏭</button>
+        <!-- Galaxia 3D con Frases y Corazón Central -->
+        <div id="galaxy-container">
+            <div class="galaxy-header">
+                <h1>Universo de Amor para Ti</h1>
+            </div>
+
+            <!-- Canvas para la animación 3D de la galaxia y el corazón -->
+            <canvas id="galaxyCanvas"></canvas>
+
+            <!-- Botón central en el corazón -->
+            <button class="heart-center-btn" onclick="scrollToContent()">Da click aquí ❤️</button>
+
+            <!-- Reproductor de Música -->
+            <div class="music-float">
+                <button onclick="prevSong()" title="Anterior">⏮</button>
+                <button id="play-music-btn" onclick="toggleMusic()" title="Play/Pausa">▶</button>
+                <button onclick="nextSong()" title="Siguiente">⏭</button>
+                <span id="music-status">Música</span>
+            </div>
+        </div>
+
+        <!-- Secciones Inferiores (Carta, Galería, Cupones, Segundos) -->
+        <div class="content-sections" id="bottom-content">
+            <!-- Carta de Amor -->
+            <div class="letter-container">
+                <h3 style="font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--secondary);">Carta para ti, mi amor</h3>
+                <div id="letter-text" class="letter-content">
+¡Feliz cumpleaños, hermosa!
+La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
+Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
+Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
+Te amo muchísimo. ¡A celebrar!
+
+Te Lobo 🐺 ♥️
                 </div>
-                <span id="music-status">Toca play para escuchar</span>
-            </div>
-        </header>
-
-        <div class="container">
-            <!-- Carta Interactiva tipo Sobre -->
-            <div class="envelope-card" onclick="toggleLetter()">
-                <h3>💌 Toca para abrir tu carta</h3>
-                <p style="font-size: 0.85rem; opacity: 0.9;">Un mensaje especial para ti</p>
+                <button class="letter-toggle-btn" onclick="toggleLetter()">Abrir / Cerrar Carta</button>
             </div>
 
-            <!-- Contenido oculto de la carta -->
-            <div id="letter-box" class="letter-modal">
-                <h3 style="color: var(--accent); font-family: 'Great Vibes', cursive; font-size: 2rem;">Para mi amor</h3>
-                <div class="letter-content">¡Feliz cumpleaños, hermosa!
-​La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
-​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
-​Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
-​Te amo muchísimo. ¡A celebrar!
-
-Te Lobo 🐺 ♥️</div>
-                <button class="close-letter" onclick="toggleLetter()">Cerrar carta</button>
-            </div>
-
-            <!-- Dinamismo Intercalado: Fotos principales -->
-            <div class="dynamic-item">
-                <img src="IMG-20210402-WA0030.jpg" alt="Recuerdo">
-                <p>1. Por lo dulce que es cuando me regala una sonrisa.</p>
-            </div>
-
-            <div class="dynamic-item">
-                <img src="IMG-20220601-WA0015.jpg" alt="Recuerdo">
-                <p>2. Por su sinceridad, porque sé que siempre me habla con la verdad.</p>
-            </div>
-
-            <div class="dynamic-item">
-                <img src="IMG-20220716-WA0084.jpg" alt="Recuerdo">
-                <p>3. Por lo dedicada que es en todo lo que se propone.</p>
-            </div>
-
-            <div class="dynamic-item">
-                <img src="IMG-20221205-WA0021.jpg" alt="Recuerdo">
-                <p>4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.</p>
-            </div>
-
-            <!-- ÁREA DE GALERÍA DE RECUERDOS -->
+            <!-- Galería de Recuerdos Horizontal -->
             <div class="gallery-section">
-                <h2>📸 Galería de Recuerdos</h2>
-                <div class="gallery-grid">
+                <h2>📸 Galería de Recuerdos (Desliza a la derecha)</h2>
+                <div class="horizontal-scroll">
                     <div class="gallery-card"><img src="20200531_172821.jpg" alt="Recuerdo"></div>
                     <div class="gallery-card"><img src="20200614_173856.jpg" alt="Recuerdo"></div>
                     <div class="gallery-card"><img src="20200913_180545.jpg" alt="Recuerdo"></div>
@@ -587,88 +481,9 @@ Te Lobo 🐺 ♥️</div>
                 </div>
             </div>
 
-            <!-- Sección de las demás razones -->
-            <div class="section-card">
-                <h2>✨ Razones por las cuales te amo</h2>
-                <div class="reason-box">5. Por cómo se enoja de forma tierna cuando algo no le sale como quiere (enojona).</div>
-                <div class="reason-box">6. Por lo tierna que puede llegar a ser de la nada.</div>
-                <div class="reason-box">7. Por su gran sensibilidad ante las cosas que le importan.</div>
-                <div class="reason-box">8. Por el amor tan puro y el respeto tan grande que le tiene a los perros.</div>
-                <div class="reason-box">9. Por la empatía y el dolor genuino que siente ante cualquier caso de maltrato animal.</div>
-                <div class="reason-box">10. Por lo mucho que le encantan los gatos y cómo los consiente.</div>
-                <div class="reason-box">11. Por lo linda que es en absolutamente todo lo que hace respecto a mí.</div>
-                <div class="reason-box">12. Por lo atenta que es con los pequeños y grandes detalles.</div>
-                <div class="reason-box">13. Por lo bien que me conoce.</div>
-                <div class="reason-box">14. Por cómo equilibra su fuerza con su enorme sensibilidad.</div>
-                <div class="reason-box">15. Por la pasión que le pone a las cosas que le apasionan.</div>
-                <div class="reason-box">16. Por cómo se ve cuando está concentrada haciendo algo.</div>
-                <div class="reason-box">17. Por lo noble de su corazón, incluso cuando intenta ponerse brava.</div>
-                <div class="reason-box">18. Por cómo defiende lo que cree con tanta convicción.</div>
-                <div class="reason-box">19. Por su bondad infinita hacia los animales y los seres indefensos.</div>
-                <div class="reason-box">20. Por la ternura con la que trata a sus mascotas.</div>
-                <div class="reason-box">21. Por cómo se ilumina su cara cuando ve a un perrito o un gatito en la calle.</div>
-                <div class="reason-box">22. Por lo genuina que es su risa cuando realmente la hago reír.</div>
-                <div class="reason-box">23. Por la paz que me transmite su presencia a pesar de su carácter fuerte.</div>
-                <div class="reason-box">24. Por ser exactamente como es, sin intentar cambiar para encajar en ningún lado.</div>
-                <div class="reason-box">25. Por cómo cuida de mí cuando más lo necesito.</div>
-                <div class="reason-box">26. Por las atenciones diarias que demuestran cuánto le importo.</div>
-                <div class="reason-box">27. Por el hecho de que me conoce tan bien que sabe cuando algo me pasa con solo verme.</div>
-                <div class="reason-box">28. Por cómo se preocupa por mi bienestar y mi felicidad.</div>
-                <div class="reason-box">29. Por los mensajes inesperados que alegran cualquiera de mis días.</div>
-                <div class="reason-box">30. Por cómo celebra mis logros como si fueran suyos.</div>
-                <div class="reason-box">31. Por la paciencia que me tiene en mis días difíciles.</div>
-                <div class="reason-box">32. Por cómo ha estado a mi lado durante todo este tiempo juntos.</div>
-                <div class="reason-box">33. Por la confianza que hemos construido paso a paso.</div>
-                <div class="reason-box">34. Por ser mi refugio seguro después de un día pesado.</div>
-                <div class="reason-box">35. Por cómo me escucha sin juzgarme.</div>
-                <div class="reason-box">36. Por los abrazos que tienen el poder de arreglar cualquier mal momento.</div>
-                <div class="reason-box">37. Por la forma en que me mira cuando cree que no me doy cuenta.</div>
-                <div class="reason-box">38. Por cómo me incluye en sus planes y en su vida.</div>
-                <div class="reason-box">39. Por ser mi cómplice en cada ocurrencia y aventura.</div>
-                <div class="reason-box">40. Por la lealtad inquebrantable que me demuestra todos los días.</div>
-                <div class="reason-box">41. Por cómo respeta mi espacio y apoya mis metas.</div>
-                <div class="reason-box">42. Por los recuerdos tan bonitos que hemos creado juntos a lo largo de estos más de 6 años.</div>
-                <div class="reason-box">43. Por la forma en que se esfuerza para que nuestra relación funcione y crezca.</div>
-                <div class="reason-box">44. Por cómo convierte un día ordinario en algo especial con solo estar ahí.</div>
-                <div class="reason-box">45. Por el cariño tan sincero que me transmite con un simple toque.</div>
-                <div class="reason-box">46. Por cómo me defiende y me apoya ante el mundo.</div>
-                <div class="reason-box">47. Por las pláticas largas donde podemos hablar de todo y de nada.</div>
-                <div class="reason-box">48. Por la seguridad que siento al saber que nos tenemos el uno al otro.</div>
-                <div class="reason-box">49. Por ser, simplemente, mi persona favorita en el mundo.</div>
-                <div class="reason-box">50. Por su carita de "enojada" que en realidad me da risa de lo tierna que se ve.</div>
-                <div class="reason-box">51. Por cómo arruga la nariz cuando algo no le parece o se concentra.</div>
-                <div class="reason-box">52. Por la forma en que cuida cada detalle de las cosas que hace por mí.</div>
-                <div class="reason-box">53. Por sus pucheros cuando quiere conseguir algo o se hace la difícil.</div>
-                <div class="reason-box">54. Por la manera en que se acurruca conmigo cuando tenemos tiempo para descansar.</div>
-                <div class="reason-box">55. Por cómo reacciona cuando ve videos de perritos rescatados o gatitos tiernos.</div>
-                <div class="reason-box">56. Por sus manitas y cómo se siente tomarlas entre las mías.</div>
-                <div class="reason-box">57. Por los apodos y bromas internas que solo nosotros entendemos.</div>
-                <div class="reason-box">58. Por cómo se emociona cuando algo le sale bien o le gusta mucho.</div>
-                <div class="reason-box">59. Por su forma de caminar y sus gestos tan característicos.</div>
-                <div class="reason-box">60. Por cómo se ve por las mañanas recién despierta.</div>
-                <div class="reason-box">61. Por el empeño que pone cuando quiere darme una sorpresa o un detalle.</div>
-                <div class="reason-box">62. Por cómo se pone cuando le coqueteo o le digo cosas bonitas.</div>
-                <div class="reason-box">63. Por la paciencia con la que tolera mis propias manías.</div>
-                <div class="reason-box">64. Por cómo comparte conmigo lo que le gusta y lo que le disgusta.</div>
-                <div class="reason-box">65. Por los suspiros que suelta cuando está cansada pero contenta.</div>
-                <div class="reason-box">66. Por la forma en que se acomoda en el carro o en el sillón a mi lado.</div>
-                <div class="reason-box">67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.</div>
-                <div class="reason-box">68. Por su risa contagiosa que se escucha desde el fondo de su alma.</div>
-                <div class="reason-box">69. Por cómo cuida de sus cosas y de su entorno con esmero.</div>
-                <div class="reason-box">70. Por la ternura con la que me regaña cuando hago alguna tontería.</div>
-                <div class="reason-box">71. Por cómo se despide de mí y cómo me recibe después de vernos.</div>
-                <div class="reason-box">72. Por los silencios compartidos que nunca se sienten incómodos con ella.</div>
-                <div class="reason-box">73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.</div>
-                <div class="reason-box">74. Por la mujer tan chingona y admirable en la que se ha convertido.</div>
-                <div class="reason-box">75. Por cómo enfrenta los retos de la vida sin cobardía.</div>
-                <div class="reason-box">76. Por los valores tan firmes que rigen su vida y sus acciones, y por ser mi todo.</div>
-                <div style="text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);">Te amo muchísimo, Mildred 🐺♥️</div>
-            </div>
-
-            <!-- Sección de Cupones de Amor Canjeables -->
-            <div class="section-card">
+            <!-- Cupones de Amor -->
+            <div class="coupon-section">
                 <h2>🎟️ Cupones de Amor Canjeables</h2>
-                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #666;">Toca cualquier cupón para canjearlo conmigo:</p>
                 <div class="coupon-grid">
                     <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una cita en tu restaurante favorito! 🍔')">
                         <h4>Cita en tu restaurante favorito</h4>
@@ -685,7 +500,7 @@ Te Lobo 🐺 ♥️</div>
                 </div>
             </div>
 
-            <!-- Tarjeta Final: Segundos que hemos pasado juntos -->
+            <!-- Contador de Segundos Juntos -->
             <div class="love-seconds-card">
                 <h3>Segundos que hemos pasado juntos</h3>
                 <span id="love-seconds">0</span>
@@ -693,31 +508,244 @@ Te Lobo 🐺 ♥️</div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts de la Galaxia 3D y Funcionalidades -->
     <script>
-        // Playlist de las 3 canciones con codificación de nombres de archivo
-        const playlist = [
-            {
-                src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"),
-                title: "What Took You So Long"
-            },
-            {
-                src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"),
-                title: "Follow You"
-            },
-            {
-                src: encodeURI("Gorillaz - On Melancholy Hill (lyrics).mp3"),
-                title: "On Melancholy Hill"
+        // Lista de las 75 frases de amor
+        const lovePhrases = [
+            "1. Por lo dulce que es cuando me regala una sonrisa.",
+            "2. Por su sinceridad, porque sé que siempre me habla con la verdad.",
+            "3. Por lo dedicada que es en todo lo que se propone.",
+            "4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.",
+            "5. Por cómo se enoja de forma tierna cuando algo no le sale como quiere.",
+            "6. Por lo tierna que puede llegar a ser de la nada.",
+            "7. Por su gran sensibilidad ante las cosas que le importan.",
+            "8. Por el amor tan puro y el respeto tan grande que le tiene a los perros.",
+            "9. Por la empatía y el dolor genuino que siente ante cualquier caso de maltrato animal.",
+            "10. Por lo mucho que le encantan los gatos y cómo los consiente.",
+            "11. Por lo linda que es en absolutamente todo lo que hace respecto a mí.",
+            "12. Por lo atenta que es con los pequeños y grandes detalles.",
+            "13. Por lo bien que me conoce.",
+            "14. Por cómo equilibra su fuerza con su enorme sensibilidad.",
+            "15. Por la pasión que le pone a las cosas que le apasionan.",
+            "16. Por cómo se ve cuando está concentrada haciendo algo.",
+            "17. Por lo noble de su corazón, incluso cuando intenta ponerse brava.",
+            "18. Por cómo defiende lo que cree con tanta convicción.",
+            "19. Por su bondad infinita hacia los animales y los seres indefensos.",
+            "20. Por la ternura con la que trata a sus mascotas.",
+            "21. Por cómo se ilumina su cara cuando ve a un perrito o un gatito en la calle.",
+            "22. Por lo genuina que es su risa cuando realmente la hago reír.",
+            "23. Por la paz que me transmite su presencia a pesar de su carácter fuerte.",
+            "24. Por ser exactamente como es, sin intentar cambiar para encajar en ningún lado.",
+            "25. Por cómo cuida de mí cuando más lo necesito.",
+            "26. Por las atenciones diarias que demuestran cuánto le importo.",
+            "27. Por el hecho de que me conoce tan bien que sabe cuando algo me pasa con solo verme.",
+            "28. Por cómo se preocupa por mi bienestar y mi felicidad.",
+            "29. Por los mensajes inesperados que alegran cualquiera de mis días.",
+            "30. Por cómo celebra mis logros como si fueran suyos.",
+            "31. Por la paciencia que me tiene en mis días difíciles.",
+            "32. Por cómo ha estado a mi lado durante todo este tiempo juntos.",
+            "33. Por la confianza que hemos construido paso a paso.",
+            "34. Por ser mi refugio seguro después de un día pesado.",
+            "35. Por cómo me escucha sin juzgarme.",
+            "36. Por los abrazos que tienen el poder de arreglar cualquier mal momento.",
+            "37. Por la forma en que me mira cuando cree que no me doy cuenta.",
+            "38. Por cómo me incluye en sus planes y en su vida.",
+            "39. Por ser mi cómplice en cada ocurrencia y aventura.",
+            "40. Por la lealtad inquebrantable que me demuestra todos los días.",
+            "41. Por cómo respeta mi espacio y apoya mis metas.",
+            "42. Por los recuerdos tan bonitos que hemos creado juntos a lo largo de estos más de 6 años.",
+            "43. Por la forma en que se esfuerza para que nuestra relación funcione y crezca.",
+            "44. Por cómo convierte un día ordinario en algo especial con solo estar ahí.",
+            "45. Por el cariño tan sincero que me transmite con un simple toque.",
+            "46. Por cómo me defiende y me apoya ante el mundo.",
+            "47. Por las pláticas largas donde podemos hablar de todo y de nada.",
+            "48. Por la seguridad que siento al saber que nos tenemos el uno al otro.",
+            "49. Por ser, simplemente, mi persona favorita en el mundo.",
+            "50. Por su carita de enojada que en realidad me da risa de lo tierna que se ve.",
+            "51. Por cómo arruga la nariz cuando algo no le parece o se concentra.",
+            "52. Por la forma en que cuida cada detalle de las cosas que hace por mí.",
+            "53. Por sus pucheros cuando quiere conseguir algo o se hace la difícil.",
+            "54. Por la manera en que se acurruca conmigo cuando tenemos tiempo para descansar.",
+            "55. Por cómo reacciona cuando ve videos de perritos rescatados o gatitos tiernos.",
+            "56. Por sus manitas y cómo se siente tomarlas entre las mías.",
+            "57. Por los apodos y bromas internas que solo nosotros entendemos.",
+            "58. Por cómo se emociona cuando algo le sale bien o le gusta mucho.",
+            "59. Por su forma de caminar y sus gestos tan característicos.",
+            "60. Por cómo se ve por las mañanas recién despierta.",
+            "61. Por el empeño que pone cuando quiere darme una sorpresa o un detalle.",
+            "62. Por cómo se pone cuando le coqueteo o le digo cosas bonitas.",
+            "63. Por la paciencia con la que tolera mis propias manías.",
+            "64. Por cómo comparte conmigo lo que le gusta y lo que le disgusta.",
+            "65. Por los suspiros que suelta cuando está cansada pero contenta.",
+            "66. Por la forma en que se acomoda en el carro o en el sillón a mi lado.",
+            "67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.",
+            "68. Por su risa contagiosa que se escucha desde el fondo de su alma.",
+            "69. Por cómo cuida de sus cosas y de su entorno con esmero.",
+            "70. Por la ternura con la que me regaña cuando hago alguna tontería.",
+            "71. Por cómo se despide de mí y cómo me recibe después de vernos.",
+            "72. Por los silencios compartidos que nunca se sienten incómodos con ella.",
+            "73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.",
+            "74. Por la mujer tan chingona y admirable en la que se ha convertido.",
+            "75. Por cómo enfrenta los retos de la vida sin cobardía y por ser mi todo."
+        ];
+
+        // Configuración de la Galaxia 3D en Canvas
+        const canvas = document.getElementById('galaxyCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        let angleX = 0;
+        let angleY = 0;
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        // Crear partículas (Corazón central + Frases flotantes en 3D)
+        function initGalaxy() {
+            particles = [];
+            // Generar partículas para el corazón central
+            for (let i = 0; i < 300; i++) {
+                let t = Math.random() * Math.PI * 2;
+                let x = 16 * Math.pow(Math.sin(t), 3);
+                let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                particles.push({
+                    x: x * 8,
+                    y: y * 8,
+                    z: (Math.random() - 0.5) * 50,
+                    text: null,
+                    isHeart: true,
+                    color: '#ff4d6d'
+                });
             }
+
+            // Generar partículas para las 75 frases distribuidas en esfera 3D
+            lovePhrases.forEach((phrase, index) => {
+                let theta = Math.random() * 2 * Math.PI;
+                let phi = Math.acos((Math.random() * 2) - 1);
+                let radius = 180 + Math.random() * 120;
+
+                particles.push({
+                    x: radius * Math.sin(phi) * Math.cos(theta),
+                    y: radius * Math.sin(phi) * Math.sin(theta),
+                    z: radius * Math.cos(phi),
+                    text: phrase,
+                    isHeart: false,
+                    color: '#ffccd5'
+                });
+            });
+        }
+
+        // Renderizado 3D de la galaxia
+        function animateGalaxy() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let cx = canvas.width / 2;
+            let cy = canvas.height / 2;
+
+            // Rotación automática suave
+            if (!isDragging) {
+                angleY += 0.003;
+            }
+
+            particles.forEach(p => {
+                // Rotación en 3D (Ejes Y e X)
+                let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.z * cosY + p.x * sinY;
+
+                let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = z1 * cosX + p.y * sinX;
+
+                // Perspectiva 3D
+                let fov = 400;
+                let scale = fov / (fov + z2 + 300);
+                let x2proj = cx + x1 * scale;
+                let y2proj = cy + y2 * scale;
+
+                if (scale > 0) {
+                    if (p.isHeart) {
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(x2proj, y2proj, 2 * scale, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        ctx.font = `${Math.max(10, 13 * scale)}px Poppins, sans-serif`;
+                        ctx.fillStyle = `rgba(255, 204, 213, ${Math.min(1, scale * 0.9)})`;
+                        ctx.fillText(p.text, x2proj, y2proj);
+                    }
+                }
+            });
+
+            requestAnimationFrame(animateGalaxy);
+        }
+
+        // Controles táctiles / mouse para girar la galaxia
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            let deltaX = e.clientX - lastMouseX;
+            let deltaY = e.clientY - lastMouseY;
+            angleY += deltaX * 0.005;
+            angleX -= deltaY * 0.005;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        canvas.addEventListener('touchstart', e => {
+            isDragging = true;
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            let deltaX = e.touches[0].clientX - lastMouseX;
+            let deltaY = e.touches[0].clientY - lastMouseY;
+            angleY += deltaX * 0.005;
+            angleX -= deltaY * 0.005;
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        // Desplazarse al contenido inferior al hacer clic en el corazón
+        function scrollToContent() {
+            document.getElementById('bottom-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Abrir/Cerrar Carta
+        function toggleLetter() {
+            const letter = document.getElementById('letter-text');
+            letter.style.display = letter.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Reproductor de Música Playlist
+        const playlist = [
+            { src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"), title: "What Took You So Long" },
+            { src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"), title: "Follow You" },
+            { src: encodeURI("Gorillaz - On Melancholy Hill (lyrics).mp3"), title: "On Melancholy Hill" }
         ];
 
         let currentSongIndex = 0;
         const audioPlayer = new Audio();
         audioPlayer.preload = "auto";
 
-        audioPlayer.addEventListener('ended', () => {
-            nextSong();
-        });
+        audioPlayer.addEventListener('ended', () => { nextSong(); });
 
         function loadSong(index) {
             currentSongIndex = index;
@@ -728,113 +756,51 @@ Te Lobo 🐺 ♥️</div>
 
         let isPlaying = false;
         function toggleMusic() {
-            if (!audioPlayer.src || audioPlayer.src === "") {
-                loadSong(currentSongIndex);
-            }
-
+            if (!audioPlayer.src) loadSong(currentSongIndex);
             const btn = document.getElementById("play-music-btn");
-            const status = document.getElementById("music-status");
-            
             if (isPlaying) {
                 audioPlayer.pause();
                 btn.innerText = "▶";
-                status.innerText = "Pausado: " + playlist[currentSongIndex].title;
                 isPlaying = false;
             } else {
                 audioPlayer.play().then(() => {
                     btn.innerText = "⏸";
-                    status.innerText = "Reproduciendo: " + playlist[currentSongIndex].title;
                     isPlaying = true;
-                }).catch(e => {
-                    console.log("Reproducción bloqueada por el navegador:", e);
-                    status.innerText = "Toca otra vez para reproducir";
-                    alert("Toca de nuevo el botón de play para iniciar la música.");
-                });
+                }).catch(e => alert("Toca de nuevo para reproducir."));
             }
         }
 
         function nextSong() {
             currentSongIndex = (currentSongIndex + 1) % playlist.length;
             loadSong(currentSongIndex);
-            if (isPlaying) {
-                audioPlayer.play().catch(err => console.log(err));
-            }
+            if (isPlaying) audioPlayer.play();
         }
 
         function prevSong() {
             currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
             loadSong(currentSongIndex);
-            if (isPlaying) {
-                audioPlayer.play().catch(err => console.log(err));
-            }
+            if (isPlaying) audioPlayer.play();
         }
 
-        // Cargar inicial
         loadSong(0);
 
         // Canjear cupones
         function claimCoupon(element, message) {
             alert(message);
             element.style.opacity = "0.5";
-            element.style.background = "#ffe5ec";
             element.querySelector("p").innerText = "¡Canjeado con éxito! ❤️";
         }
 
-        // Efecto de Confeti al desbloquear
-        function triggerConfetti() {
-            confetti({
-                particleCount: 120,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff4d6d', '#ff758f', '#ffffff', '#c9184a']
-            });
-        }
-
-        // Calcular tiempo de vida desde el 9 de noviembre de 1998 a las 11:11 AM
-        function calculateLifeTime() {
-            const birthDate = new Date(1998, 10, 9, 11, 11, 0);
-            const now = new Date();
-            
-            let years = now.getFullYear() - birthDate.getFullYear();
-            let months = now.getMonth() - birthDate.getMonth();
-            let days = now.getDate() - birthDate.getDate();
-
-            if (days < 0) {
-                months--;
-                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-                days += prevMonth.getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-
-            document.getElementById("life-time").innerText = `${years} años, ${months} meses y ${days} días de vida 🌟`;
-        }
-
-        // Calcular segundos transcurridos desde el 14 de febrero de 2020
+        // Contador de Segundos Juntos
         function updateLoveSeconds() {
             const loveStartDate = new Date("February 14, 2020 00:00:00").getTime();
             const now = new Date().getTime();
             const secondsTogether = Math.floor((now - loveStartDate) / 1000);
-            
             document.getElementById("love-seconds").innerText = secondsTogether.toLocaleString();
         }
 
-        // Abrir/Cerrar Carta Dinámica
-        function toggleLetter() {
-            const letterBox = document.getElementById("letter-box");
-            if (letterBox.style.display === "block") {
-                letterBox.style.display = "none";
-            } else {
-                letterBox.style.display = "block";
-                letterBox.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // Cuenta regresiva estricta
+        // Cuenta regresiva
         const targetDate = new Date("November 9, 2026 11:11:00").getTime();
-
         function checkCountdown() {
             const now = new Date().getTime();
             const difference = targetDate - now;
@@ -842,9 +808,10 @@ Te Lobo 🐺 ♥️</div>
             if (difference <= 0) {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("main-content").style.display = "flex";
-                calculateLifeTime();
+                initGalaxy();
+                animateGalaxy();
                 updateLoveSeconds();
-                triggerConfetti();
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             } else {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -859,14 +826,14 @@ Te Lobo 🐺 ♥️</div>
         }
 
         function openAdmin() {
-            const pass = prompt("Introduce la contraseña de administrador:");
+            const pass = prompt("Contraseña de administrador:");
             if (pass === "Milybeb3*") {
                 document.getElementById("lock-screen").style.display = "none";
                 document.getElementById("main-content").style.display = "flex";
-                calculateLifeTime();
+                initGalaxy();
+                animateGalaxy();
                 updateLoveSeconds();
-                triggerConfetti();
-                alert("¡Modo Administrador activado con éxito!");
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             } else if (pass !== null) {
                 alert("Contraseña incorrecta.");
             }
@@ -876,7 +843,7 @@ Te Lobo 🐺 ♥️</div>
             checkCountdown();
             updateLoveSeconds();
         }, 1000);
-        
+
         checkCountdown();
     </script>
 </body>
