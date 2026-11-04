@@ -157,7 +157,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-top: 15px;
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
@@ -262,7 +262,7 @@
             margin-top: 10px;
         }
 
-        /* Estilo Intercalado: Foto y Razón Principal */
+        /* Estilo Intercalado: Fotos Principales */
         .dynamic-item {
             background: var(--bg-color);
             border-radius: 16px;
@@ -292,7 +292,7 @@
             font-weight: 500;
         }
 
-        /* --- ÁREA DE GALERÍA DE RECUERDOS (Imágenes al 100% con object-fit: contain) --- */
+        /* --- ÁREA DE GALERÍA DE RECUERDOS --- */
         .gallery-section {
             background: var(--bg-color);
             border-radius: 18px;
@@ -406,7 +406,7 @@
             color: #666;
         }
 
-        /* Contador de Segundos de Amor (Pie de página) */
+        /* Contador de Segundos de Amor */
         .love-seconds-card {
             background: linear-gradient(135deg, var(--secondary), var(--primary));
             border-radius: 18px;
@@ -487,14 +487,14 @@
             <h1>Feliz vuelta al sol 🌞</h1>
             <p id="life-time">Calculando tiempo de vida...</p>
             
-            <!-- Reproductor de música múltiple (3 canciones) -->
+            <!-- Reproductor de música múltiple corregido -->
             <div class="music-player">
                 <div class="music-controls">
                     <button onclick="prevSong()" title="Anterior">⏮</button>
                     <button id="play-music-btn" onclick="toggleMusic()" title="Play/Pausa">▶</button>
                     <button onclick="nextSong()" title="Siguiente">⏭</button>
                 </div>
-                <span id="music-status">Cargando música...</span>
+                <span id="music-status">Toca play para escuchar</span>
             </div>
         </header>
 
@@ -510,7 +510,7 @@
                 <h3 style="color: var(--accent); font-family: 'Great Vibes', cursive; font-size: 2rem;">Para mi amor</h3>
                 <div class="letter-content">¡Feliz cumpleaños, hermosa!
 ​La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
-​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por agutanarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
+​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
 ​Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
 ​Te amo muchísimo. ¡A celebrar!
 
@@ -539,7 +539,7 @@ Te Lobo 🐺 ♥️</div>
                 <p>4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.</p>
             </div>
 
-            <!-- ÁREA DE GALERÍA DE RECUERDOS (Todas tus fotos del repositorio al 100%) -->
+            <!-- ÁREA DE GALERÍA DE RECUERDOS -->
             <div class="gallery-section">
                 <h2>📸 Galería de Recuerdos</h2>
                 <div class="gallery-grid">
@@ -674,7 +674,7 @@ Te Lobo 🐺 ♥️</div>
                         <h4>Cita en tu restaurante favorito</h4>
                         <p>Toca para canjear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valior por un masaje relajante y apapachos sin límite! 🥰')">
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un masaje relajante y apapachos sin límite! 🥰')">
                         <h4>Masaje relajante</h4>
                         <p>Toca para canjear</p>
                     </div>
@@ -695,27 +695,26 @@ Te Lobo 🐺 ♥️</div>
 
     <!-- Scripts -->
     <script>
-        // Lista de canciones conectadas con tus archivos de GitHub
+        // Playlist de las 3 canciones con codificación de nombres de archivo
         const playlist = [
             {
-                src: "Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3",
+                src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"),
                 title: "What Took You So Long"
             },
             {
-                src: "Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3",
+                src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"),
                 title: "Follow You"
             },
             {
-                src: "Gorillaz - On Melancholy Hill (lyrics).mp3",
+                src: encodeURI("Gorillaz - On Melancholy Hill (lyrics).mp3"),
                 title: "On Melancholy Hill"
             }
         ];
 
         let currentSongIndex = 0;
         const audioPlayer = new Audio();
-        audioPlayer.loop = false;
+        audioPlayer.preload = "auto";
 
-        // Al terminar una canción, pasar a la siguiente automáticamente
         audioPlayer.addEventListener('ended', () => {
             nextSong();
         });
@@ -729,23 +728,27 @@ Te Lobo 🐺 ♥️</div>
 
         let isPlaying = false;
         function toggleMusic() {
-            if (!audioPlayer.src) {
+            if (!audioPlayer.src || audioPlayer.src === "") {
                 loadSong(currentSongIndex);
             }
 
             const btn = document.getElementById("play-music-btn");
+            const status = document.getElementById("music-status");
             
             if (isPlaying) {
                 audioPlayer.pause();
                 btn.innerText = "▶";
+                status.innerText = "Pausado: " + playlist[currentSongIndex].title;
                 isPlaying = false;
             } else {
                 audioPlayer.play().then(() => {
                     btn.innerText = "⏸";
+                    status.innerText = "Reproduciendo: " + playlist[currentSongIndex].title;
                     isPlaying = true;
                 }).catch(e => {
-                    console.log("Audio play blocked by browser", e);
-                    alert("Toca la pantalla o el botón de nuevo para iniciar la reproducción de audio.");
+                    console.log("Reproducción bloqueada por el navegador:", e);
+                    status.innerText = "Toca otra vez para reproducir";
+                    alert("Toca de nuevo el botón de play para iniciar la música.");
                 });
             }
         }
@@ -754,7 +757,7 @@ Te Lobo 🐺 ♥️</div>
             currentSongIndex = (currentSongIndex + 1) % playlist.length;
             loadSong(currentSongIndex);
             if (isPlaying) {
-                audioPlayer.play();
+                audioPlayer.play().catch(err => console.log(err));
             }
         }
 
@@ -762,11 +765,11 @@ Te Lobo 🐺 ♥️</div>
             currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
             loadSong(currentSongIndex);
             if (isPlaying) {
-                audioPlayer.play();
+                audioPlayer.play().catch(err => console.log(err));
             }
         }
 
-        // Inicializar la primera canción al cargar
+        // Cargar inicial
         loadSong(0);
 
         // Canjear cupones
