@@ -501,6 +501,42 @@
             from { transform: scale(0.3); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
+
+        /* ===== Tema Mildred: tulipanes, rosas, perritos, gatitos y toque stop-motion ===== */
+        #petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
+        .petal { position: absolute; top: -10vh; will-change: transform; animation: petalFall linear infinite; filter: drop-shadow(0 0 6px rgba(255,120,160,.6)); }
+        @keyframes petalFall {
+            0% { transform: translate3d(0,-10vh,0) rotate(0deg); opacity: 0; }
+            10% { opacity: .95; }
+            50% { transform: translate3d(var(--sway),55vh,0) rotate(180deg); }
+            100% { transform: translate3d(calc(var(--sway) * -1),115vh,0) rotate(360deg); opacity: .6; }
+        }
+        .galaxy-header h1, .gallery-section h2, .coupon-section h2, .fav-section h2 {
+            background: linear-gradient(90deg, #ffd166, #ff8fab, #b8f2e6, #ff8fab, #ffd166);
+            background-size: 300% 100%; -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shimmer 8s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .fav-section { padding: 30px 15px; text-align: center; }
+        .fav-section h2 { margin-bottom: 20px; }
+        .fav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
+        .fav-card {
+            position: relative; padding: 22px 12px; border-radius: 20px; cursor: pointer; overflow: hidden;
+            background: linear-gradient(160deg, rgba(255,143,171,.18), rgba(20,10,30,.7));
+            border: 1px solid rgba(255,143,171,.45); backdrop-filter: blur(6px);
+            opacity: 0; transform: translateY(30px) scale(.95); transition: opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.8,.2,1), box-shadow .4s;
+        }
+        .fav-card.show { opacity: 1; transform: none; }
+        .fav-card:hover, .fav-card:active { box-shadow: 0 0 25px rgba(255,143,171,.55); transform: translateY(-6px) scale(1.03); }
+        .fav-card .emo { display: block; font-size: 3rem; animation: bob 4s ease-in-out infinite; }
+        .fav-card:nth-child(even) .emo { animation-delay: -2s; }
+        @keyframes bob { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-8px) rotate(6deg); } }
+        .fav-card h4 { margin-top: 8px; color: #ffd6e0; }
+        .fav-card p { font-size: .85rem; opacity: .85; margin-top: 6px; min-height: 2.4em; }
+        .stripe-divider { height: 14px; margin: 25px auto; max-width: 600px; border-radius: 7px; opacity: .8;
+            background: repeating-linear-gradient(90deg, #fff 0 18px, #1a1a1a 18px 36px); box-shadow: 0 0 14px rgba(184,242,230,.35); }
+        .bloom { position: fixed; pointer-events: none; z-index: 9999; font-size: 2rem; animation: bloomUp 1.6s ease-out forwards; }
+        @keyframes bloomUp { from { transform: translate(-50%,-50%) scale(.3); opacity: 1; } to { transform: translate(-50%,-260%) scale(1.6) rotate(25deg); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -537,6 +573,7 @@
     </div>
 
     <!-- Contenedor Principal -->
+    <div id="petals"></div>
     <div id="main-content">
         
         <!-- 1. VISTA DE INICIO: Agujero Negro Estilo Realista 3D, Corazón y Planetas/Fotos Orbitando -->
@@ -590,6 +627,27 @@ Te Lobo 🐺 ♥️
                 </div>
             </div>
 
+
+            <div class="stripe-divider"></div>
+
+            <!-- Cosas que le encantan a Mildred -->
+            <div class="fav-section">
+                <h2>🌷 Tus cosas favoritas 🌷</h2>
+                <div class="fav-grid">
+                    <div class="fav-card" data-msg="Tulipanes para ti, hoy y siempre 🌷"><span class="emo">🌷</span><h4>Tulipanes</h4><p>Un ramo infinito de los que más te gustan.</p></div>
+                    <div class="fav-card" data-msg="Rosas rosas, tan suaves como tú 🌹"><span class="emo">🌹</span><h4>Rosas rosas</h4><p>Delicadas, bonitas y únicas, como tú.</p></div>
+                    <div class="fav-card" data-msg="¡Estoy listo! ¡Estoy listo! 🧽"><span class="emo">🧽</span><h4>Bob Esponja</h4><p>Porque tu risa es tan contagiosa como la suya.</p></div>
+                    <div class="fav-card" data-msg="¿Es mayonesa una cuenta de amor? Patricio dice que sí ⭐"><span class="emo">⭐</span><h4>Patricio</h4><p>El mejor amigo, igual que tú para mí.</p></div>
+                    <div class="fav-card" data-msg="Noche de películas stop-motion, mantita y tú 🎞️"><span class="emo">🎞️</span><h4>Cine slow motion</h4><p>Coraline y su mundo de botones y magia.</p></div>
+                    <div class="fav-card" data-msg="Un amor que ni la muerte puede detener 💀🦋"><span class="emo">🦋</span><h4>El cadáver de la novia</h4><p>Romance oscuro, bonito y eterno.</p></div>
+                    <div class="fav-card" data-msg="¿Qué es esto? ¿Qué es esto? ¡Es nuestra Navidad! 🎃"><span class="emo">🎃</span><h4>Jack Skellington</h4><p>El rey calabaza tiene una novia: tú, mi Sally.</p></div>
+                    <div class="fav-card" data-msg="Guau guau 🐶 ¡Todos los perritos te aman!"><span class="emo">🐶</span><h4>Perritos</h4><p>Colitas moviéndose cuando te ven llegar.</p></div>
+                    <div class="fav-card" data-msg="Miau 🐱 ronroneos y apapachos para ti"><span class="emo">🐱</span><h4>Gatitos</h4><p>Ronroneos, mimos y siestas contigo.</p></div>
+                </div>
+            </div>
+
+            <div class="stripe-divider"></div>
+
             <!-- Cupones de Amor -->
             <div class="coupon-section">
                 <h2>🎟️ Cupones de Amor Canjeables</h2>
@@ -604,6 +662,22 @@ Te Lobo 🐺 ♥️
                     </div>
                     <div class="coupon-card" onclick="claimCoupon(this, '¡Valió para elegir la película o serie sin pretextos! 🍿')">
                         <h4>Elegir la película/serie</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un ramo de tulipanes o rosas rosas! 🌷')">
+                        <h4>Ramo de tulipanes o rosas rosas</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una noche de película stop-motion con mantita y palomitas! 🎞️')">
+                        <h4>Noche de Coraline / Jack / Novia cadáver</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un día de visitar perritos y gatitos! 🐶🐱')">
+                        <h4>Día de perritos y gatitos</h4>
+                        <p>Toca para canjear</p>
+                    </div>
+                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un maratón de Bob Esponja y Patricio! 🧽⭐')">
+                        <h4>Maratón de Bob Esponja</h4>
                         <p>Toca para canjear</p>
                     </div>
                 </div>
@@ -829,7 +903,7 @@ Te Lobo 🐺 ♥️
         let dragMoved = 0;
         let galaxyReady = false;
         let galaxyScene = null; // { THREE, camera, planets, enter, heart, raycaster }
-        const GALAXY_PHRASES = ['Eres mi razón de ser 💗', 'Te amo, Mildred', 'Eres mi persona favorita ⭐', 'Contigo hasta el final', 'Mi equipo incondicional', 'Te Lobo 🐺', 'Cada día te quiero más', 'Gracias por existir', 'Eres mi hogar 🏡', 'Mi cómplice favorita'];
+        const GALAXY_PHRASES = ['Eres mi razón de ser 💗', 'Te amo, Mildred', 'Eres mi persona favorita ⭐', 'Contigo hasta el final', 'Mi equipo incondicional', 'Te Lobo 🐺', 'Cada día te quiero más', 'Gracias por existir', 'Eres mi hogar 🏡', 'Mi cómplice favorita', 'Mi tulipán favorito 🌷', 'Contigo todo es mágico 🦋', 'Mi Sally, mi Coraline 💙', 'Eres más bonita que una rosa rosa 🌹', 'Mi persona favorita, como Patricio y Bob 🧽'];
 
         function showGalaxyFallback() {
             const btn = document.createElement('button');
@@ -970,6 +1044,16 @@ Te Lobo 🐺 ♥️
                 scene.add(spr); return spr;
             });
 
+            // Emojis flotantes: tulipanes, rosas, mascotas y personajes favoritos
+            const emojis = ['🌷','🌹','🐶','🐱','🧽','⭐','🎃','🦋','💀','🌷','🌹','🐶','🐱','💗','🌷','🌹'].map((e, i, arr) => {
+                const c = document.createElement('canvas'); c.width = c.height = 128;
+                const g = c.getContext('2d'); g.font = '96px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, 64, 72);
+                const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+                spr.scale.setScalar(3.2);
+                spr.userData = { radius: 17 + (i % 4) * 6, ang: i / arr.length * 6.283, speed: (i % 2 ? .05 : -.04), y: (Math.random() - .5) * 12 };
+                scene.add(spr); return spr;
+            });
+
             addEventListener('resize', () => {
                 camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
                 renderer.setSize(innerWidth, innerHeight, false);
@@ -985,7 +1069,8 @@ Te Lobo 🐺 ♥️
                 ring.material.opacity = .45 + Math.sin(t * 2) * .1;
                 heart.scale.setScalar(1 + Math.pow(Math.sin(t * 3), 8) * .12); heart.rotation.y = t * .3;
                 enter.material.opacity = .75 + Math.sin(t * 2.5) * .25;
-                for (const p of [...planets, ...phrases]) {
+                emojis.forEach((m, i) => m.material.rotation = Math.sin(t * 1.5 + i) * .25);
+                for (const p of [...planets, ...phrases, ...emojis]) {
                     const d = p.userData, a = d.ang + t * d.speed;
                     p.position.set(Math.cos(a) * d.radius, d.y + Math.sin(t + d.ang) * .4, Math.sin(a) * d.radius);
                 }
@@ -1173,6 +1258,44 @@ Te Lobo 🐺 ♥️
 
         // Entra a la app una sola vez (evita repetir animación, confeti y música cada segundo)
         let appStarted = false;
+
+        // Los emojis de los títulos con degradado van en su propia caja para conservar su color
+        document.querySelectorAll('.galaxy-header h1, .gallery-section h2, .coupon-section h2, .fav-section h2').forEach(h => {
+            h.innerHTML = h.innerHTML.replace(/(\p{Extended_Pictographic}\uFE0F?)/gu, '<span style="display:inline-block;-webkit-text-fill-color:initial">$1</span>');
+        });
+
+        // Pétalos y flores cayendo en cámara lenta
+        function startPetals() {
+            const box = document.getElementById('petals');
+            if (box.childElementCount) return;
+            const set = ['🌷','🌸','🌹','🌷','🦋','🐾','💗','🌷'];
+            for (let i = 0; i < 26; i++) {
+                const el = document.createElement('span');
+                el.className = 'petal';
+                el.textContent = set[i % set.length];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (14 + Math.random() * 18) + 'px';
+                el.style.animationDuration = (14 + Math.random() * 14) + 's';
+                el.style.animationDelay = (-Math.random() * 28) + 's';
+                el.style.setProperty('--sway', (Math.random() * 120 - 60) + 'px');
+                box.appendChild(el);
+            }
+        }
+
+        // Las tarjetas aparecen suavemente; al tocarlas brota una flor y un mensaje
+        const favObserver = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: .2 });
+        document.querySelectorAll('.fav-card').forEach((card, i) => {
+            card.style.transitionDelay = (i % 3) * 0.15 + 's';
+            favObserver.observe(card);
+            card.addEventListener('click', e => {
+                const b = document.createElement('div');
+                b.className = 'bloom'; b.textContent = card.querySelector('.emo').textContent;
+                b.style.left = e.clientX + 'px'; b.style.top = e.clientY + 'px';
+                document.body.appendChild(b); setTimeout(() => b.remove(), 1700);
+                card.querySelector('p').textContent = card.dataset.msg;
+            });
+        });
+
         function enterApp() {
             if (appStarted) return;
             appStarted = true;
@@ -1181,6 +1304,7 @@ Te Lobo 🐺 ♥️
             startWarpSpeed(() => {
                 document.getElementById("main-content").style.display = "flex";
                 initGalaxy();
+                startPetals();
                 updateLoveSeconds();
                 playAudioAutomatically();
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
