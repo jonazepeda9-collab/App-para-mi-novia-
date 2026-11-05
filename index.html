@@ -470,6 +470,37 @@
             align-items: center;
             justify-content: center;
         }
+
+        #galaxyCanvas { touch-action: none; }
+
+        .photo-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        .photo-nav.prev { left: 10px; }
+        .photo-nav.next { right: 10px; }
+
+        #photo-counter {
+            position: absolute;
+            bottom: 22px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+
+        #fullscreen-modal img.pop { animation: photoPop 0.35s ease; }
+        @keyframes photoPop {
+            from { transform: scale(0.3); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -499,7 +530,10 @@
     <!-- Modal de Pantalla Completa para Fotos -->
     <div id="fullscreen-modal" onclick="closeFullscreen()">
         <button class="close-fullscreen" onclick="closeFullscreen()">×</button>
-        <img id="fullscreen-img" src="" alt="Foto ampliada">
+        <button class="photo-nav prev" onclick="event.stopPropagation(); stepPhoto(-1)">‹</button>
+        <img id="fullscreen-img" src="" alt="Foto ampliada" onclick="event.stopPropagation()">
+        <button class="photo-nav next" onclick="event.stopPropagation(); stepPhoto(1)">›</button>
+        <div id="photo-counter"></div>
     </div>
 
     <!-- Contenedor Principal -->
@@ -685,14 +719,43 @@ Te Lobo 🐺 ♥️
             galleryContainer.appendChild(card);
         });
 
+        let currentPhoto = 0;
         function openFullscreen(src) {
-            document.getElementById('fullscreen-img').src = encodeURI(src);
+            currentPhoto = Math.max(0, photoFiles.indexOf(src));
+            const img = document.getElementById('fullscreen-img');
+            img.src = encodeURI(photoFiles[currentPhoto]);
+            img.classList.remove('pop');
+            void img.offsetWidth; // reinicia la animación
+            img.classList.add('pop');
+            document.getElementById('photo-counter').innerText = `${currentPhoto + 1} / ${photoFiles.length}`;
             document.getElementById('fullscreen-modal').style.display = 'flex';
+        }
+
+        function stepPhoto(dir) {
+            openFullscreen(photoFiles[(currentPhoto + dir + photoFiles.length) % photoFiles.length]);
         }
 
         function closeFullscreen() {
             document.getElementById('fullscreen-modal').style.display = 'none';
         }
+
+        document.addEventListener('keydown', e => {
+            if (document.getElementById('fullscreen-modal').style.display !== 'flex') return;
+            if (e.key === 'ArrowRight') stepPhoto(1);
+            else if (e.key === 'ArrowLeft') stepPhoto(-1);
+            else if (e.key === 'Escape') closeFullscreen();
+        });
+
+        // Deslizar para cambiar de foto
+        let swipeX = null;
+        const fsModal = document.getElementById('fullscreen-modal');
+        fsModal.addEventListener('touchstart', e => { swipeX = e.touches[0].clientX; }, { passive: true });
+        fsModal.addEventListener('touchend', e => {
+            if (swipeX === null) return;
+            const dx = e.changedTouches[0].clientX - swipeX;
+            swipeX = null;
+            if (Math.abs(dx) > 60) stepPhoto(dx < 0 ? 1 : -1);
+        });
 
         function showRandomPhrase() {
             const randomIndex = Math.floor(Math.random() * lovePhrases.length);
@@ -774,7 +837,23 @@ Te Lobo 🐺 ♥️
         let lastMouseX = 0;
         let lastMouseY = 0;
         let orbitingPhotos = [];
+        let zoom = 1;
+        let dragMoved = 0;
 
+        // Proyección 3D compartida por el dibujo y la detección de toques
+        function projectPoint(p, cx, cy) {
+            let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+            let x1 = p.x * cosY - p.z * sinY;
+            let z1 = p.z * cosY + p.x * sinY;
+
+            let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+            let y2 = p.y * cosX - z1 * sinX;
+            let z2 = z1 * cosX + p.y * sinX;
+
+            let fov = 400;
+            let scale = (fov / (fov + z2 + 300)) * zoom;
+            return { x: cx + x1 * scale, y: cy + y2 * scale, scale: scale, z2: z2 };
+        }
         function initGalaxy() {
             accretionDisk = [];
             plasmaJet = [];
@@ -835,7 +914,8 @@ Te Lobo 🐺 ♥️
                     z: radius * Math.cos(phi),
                     img: imgObj,
                     src: photo,
-                    size: 55
+                    speed: (0.0008 + Math.random() * 0.0025) * (index % 2 ? 1 : -1),
+                    size: 70
                 });
             });
         }
@@ -849,25 +929,50 @@ Te Lobo 🐺 ♥️
                 angleY += 0.0025;
             }
 
-            // Función auxiliar de rotación y proyección 3D
-            function project(p) {
-                let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-                let x1 = p.x * cosY - p.z * sinY;
-                let z1 = p.z * cosY + p.x * sinY;
+            // Cada foto gira lentamente en su propia órbita
+            orbitingPhotos.forEach(p => {
+                let c = Math.cos(p.speed), s = Math.sin(p.speed);
+                let nx = p.x * c - p.z * s;
+                p.z = p.z * c + p.x * s;
+                p.x = nx;
+            });
 
-                let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-                let y2 = p.y * cosX - z1 * sinX;
-                let z2 = z1 * cosX + p.y * sinX;
+            const beat = 1 + Math.pow(Math.sin(performance.now() / 1000 * 3), 8) * 0.1; // latido del corazón
 
-                let fov = 400;
-                let scale = fov / (fov + z2 + 300);
-                return {
-                    x: cx + x1 * scale,
-                    y: cy + y2 * scale,
-                    scale: scale,
-                    z2: z2
-                };
+            const project = p => projectPoint(p, cx, cy);
+
+            // Dibuja una foto como planeta (recorte centrado, sin deformar)
+            function drawPhoto(item) {
+                const p = item.p, proj = item.proj;
+                if (proj.scale <= 0) return;
+                let currentSize = p.size * proj.scale;
+                ctx.save();
+                ctx.globalAlpha = Math.min(1, Math.max(0.45, 1 - proj.z2 / 900));
+                ctx.shadowColor = '#ff758f';
+                ctx.shadowBlur = 12 * proj.scale;
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                if (p.img.complete && p.img.naturalWidth) {
+                    const m = Math.min(p.img.naturalWidth, p.img.naturalHeight);
+                    ctx.drawImage(p.img, (p.img.naturalWidth - m) / 2, (p.img.naturalHeight - m) / 2, m, m,
+                        proj.x - currentSize / 2, proj.y - currentSize / 2, currentSize, currentSize);
+                } else {
+                    ctx.fillStyle = '#ff758f';
+                    ctx.fill();
+                }
+                ctx.restore();
+                ctx.lineWidth = 2.5 * proj.scale;
+                ctx.strokeStyle = "#ff758f";
+                ctx.beginPath();
+                ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
+                ctx.stroke();
             }
+
+            // Fotos ordenadas por profundidad: las lejanas van detrás del agujero negro
+            const photoItems = orbitingPhotos.map(p => ({ p, proj: project(p) })).sort((a, b) => b.proj.z2 - a.proj.z2);
+            photoItems.filter(i => i.proj.z2 > 0).forEach(drawPhoto);
 
             // A. Renderizar Disco de Acreción
             accretionDisk.forEach(p => {
@@ -886,7 +991,7 @@ Te Lobo 🐺 ♥️
             ctx.shadowBlur = 25;
             ctx.fillStyle = "#000000";
             ctx.beginPath();
-            ctx.arc(cx, cy, 42, 0, Math.PI * 2);
+            ctx.arc(cx, cy, 42 * zoom, 0, Math.PI * 2);
             ctx.fill();
             ctx.lineWidth = 3.5;
             ctx.strokeStyle = "#ffb703";
@@ -906,7 +1011,7 @@ Te Lobo 🐺 ♥️
 
             // D. Renderizar Corazón 3D
             heartParticles.forEach(p => {
-                let proj = project(p);
+                let proj = project({ x: p.x * beat, y: (p.y + 20) * beat - 20, z: p.z * beat });
                 if (proj.scale > 0) {
                     ctx.fillStyle = p.color;
                     ctx.beginPath();
@@ -915,33 +1020,8 @@ Te Lobo 🐺 ♥️
                 }
             });
 
-            // E. Renderizar Fotos Orbitando con efecto estelar
-            orbitingPhotos.forEach(p => {
-                let proj = project(p);
-                if (proj.scale > 0) {
-                    let currentSize = p.size * proj.scale;
-                    
-                    ctx.save();
-                    ctx.shadowColor = '#ff758f';
-                    ctx.shadowBlur = 12 * proj.scale;
-
-                    ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
-                    ctx.closePath();
-                    ctx.clip();
-                    
-                    if (p.img.complete) {
-                        ctx.drawImage(p.img, proj.x - currentSize/2, proj.y - currentSize/2, currentSize, currentSize);
-                    }
-                    ctx.restore();
-
-                    ctx.lineWidth = 2.5 * proj.scale;
-                    ctx.strokeStyle = "#ff758f";
-                    ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
-                    ctx.stroke();
-                }
-            });
+            // E. Fotos cercanas (delante del agujero negro)
+            photoItems.filter(i => i.proj.z2 <= 0).forEach(drawPhoto);
 
             // F. Texto limpio "Da click aquí ❤️" en el centro exacto (sin botón ni círculos)
             ctx.save();
@@ -972,24 +1052,11 @@ Te Lobo 🐺 ♥️
                 return;
             }
 
-            // Verificar si hizo clic en alguna foto orbitante (ordenadas de más cerca a más lejos)
-            let sortedPhotos = [...orbitingPhotos].map(p => {
-                let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-                let x1 = p.x * cosY - p.z * sinY;
-                let z1 = p.z * cosY + p.x * sinY;
-                let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-                let y2 = p.y * cosX - z1 * sinX;
-                let z2 = z1 * cosX + p.y * sinX;
-                let fov = 400;
-                let scale = fov / (fov + z2 + 300);
-                return {
-                    ...p,
-                    projX: cx + x1 * scale,
-                    projY: cy + y2 * scale,
-                    currentSize: p.size * scale,
-                    z2: z2
-                };
-            }).sort((a, b) => b.z2 - a.z2);
+            // Verificar si hizo clic en alguna foto orbitante (la más cercana primero)
+            let sortedPhotos = orbitingPhotos.map(p => {
+                const pr = projectPoint(p, cx, cy);
+                return { src: p.src, projX: pr.x, projY: pr.y, currentSize: p.size * pr.scale, z2: pr.z2 };
+            }).sort((a, b) => a.z2 - b.z2);
 
             for (let p of sortedPhotos) {
                 let dist = Math.hypot(clickX - p.projX, clickY - p.projY);
@@ -1000,45 +1067,55 @@ Te Lobo 🐺 ♥️
             }
         }
 
-        canvas.addEventListener('click', e => {
-            handleCanvasInteraction(e.clientX, e.clientY);
+        // Controles unificados (mouse y táctil): arrastrar gira, pellizcar o rueda hace zoom.
+        // Un arrastre no cuenta como clic, así que no se abre una foto por accidente.
+        const activePointers = new Map();
+        let pinchDist = 0;
+        const clampZoom = z => Math.min(1.8, Math.max(0.6, z));
+
+        canvas.addEventListener('pointerdown', e => {
+            canvas.setPointerCapture(e.pointerId);
+            activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+            isDragging = true;
+            dragMoved = 0;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
         });
 
-        canvas.addEventListener('touchend', e => {
-            if (e.changedTouches.length > 0) {
-                let touch = e.changedTouches[0];
-                handleCanvasInteraction(touch.clientX, touch.clientY);
+        canvas.addEventListener('pointermove', e => {
+            if (!activePointers.has(e.pointerId)) return;
+            activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+            if (activePointers.size === 2) {
+                const [a, b] = [...activePointers.values()];
+                const d = Math.hypot(a.x - b.x, a.y - b.y);
+                if (pinchDist) zoom = clampZoom(zoom * d / pinchDist);
+                pinchDist = d;
+                dragMoved = 99;
+                return;
             }
-        });
-
-        // Controles de giro 3D de la galaxia con mouse y táctil
-        canvas.addEventListener('mousedown', e => {
-            isDragging = true;
+            const dx = e.clientX - lastMouseX, dy = e.clientY - lastMouseY;
+            dragMoved += Math.abs(dx) + Math.abs(dy);
+            angleY += dx * 0.005;
+            angleX = Math.min(1.3, Math.max(-1.3, angleX - dy * 0.005));
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
         });
-        window.addEventListener('mousemove', e => {
-            if (!isDragging) return;
-            angleY += (e.clientX - lastMouseX) * 0.005;
-            angleX -= (e.clientY - lastMouseY) * 0.005;
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-        });
-        window.addEventListener('mouseup', () => { isDragging = false; });
 
-        canvas.addEventListener('touchstart', e => {
-            isDragging = true;
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-        });
-        window.addEventListener('touchmove', e => {
-            if (!isDragging) return;
-            angleY += (e.touches[0].clientX - lastMouseX) * 0.005;
-            angleX -= (e.touches[0].clientY - lastMouseY) * 0.005;
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-        });
-        window.addEventListener('touchend', () => { isDragging = false; });
+        function endPointer(e, allowClick) {
+            if (!activePointers.has(e.pointerId)) return;
+            if (allowClick && dragMoved < 8 && activePointers.size === 1) {
+                handleCanvasInteraction(e.clientX, e.clientY);
+            }
+            activePointers.delete(e.pointerId);
+            pinchDist = 0;
+            isDragging = activePointers.size > 0;
+        }
+        canvas.addEventListener('pointerup', e => endPointer(e, true));
+        canvas.addEventListener('pointercancel', e => endPointer(e, false));
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            zoom = clampZoom(zoom - e.deltaY * 0.001);
+        }, { passive: false });
 
         function goToContentPage() {
             document.getElementById('galaxy-container').style.display = 'none';
@@ -1138,22 +1215,31 @@ Te Lobo 🐺 ♥️
         }
 
         const targetDate = new Date("November 9, 2026 11:11:00").getTime();
+
+        // Entra a la app una sola vez (evita repetir animación, confeti y música cada segundo)
+        let appStarted = false;
+        function enterApp() {
+            if (appStarted) return;
+            appStarted = true;
+            document.getElementById("lock-screen").style.display = "none";
+
+            startWarpSpeed(() => {
+                document.getElementById("main-content").style.display = "flex";
+                initGalaxy();
+                animateGalaxy();
+                updateLoveSeconds();
+                playAudioAutomatically();
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            });
+        }
+
         function checkCountdown() {
+            if (appStarted) return;
             const now = new Date().getTime();
             const difference = targetDate - now;
 
             if (difference <= 0) {
-                document.getElementById("lock-screen").style.display = "none";
-                
-                startWarpSpeed(() => {
-                    document.getElementById("main-content").style.display = "flex";
-                    initGalaxy();
-                    animateGalaxy();
-                    updateLoveSeconds();
-                    playAudioAutomatically();
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                });
-
+                enterApp();
             } else {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1170,17 +1256,7 @@ Te Lobo 🐺 ♥️
         function openAdmin() {
             const pass = prompt("Contraseña de administrador:");
             if (pass === "Milybeb3*") {
-                document.getElementById("lock-screen").style.display = "none";
-                
-                startWarpSpeed(() => {
-                    document.getElementById("main-content").style.display = "flex";
-                    initGalaxy();
-                    animateGalaxy();
-                    updateLoveSeconds();
-                    playAudioAutomatically();
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                });
-
+                enterApp();
             } else if (pass !== null) {
                 alert("Contraseña incorrecta.");
             }
