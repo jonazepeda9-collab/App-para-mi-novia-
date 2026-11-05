@@ -537,6 +537,20 @@
             background: repeating-linear-gradient(90deg, #fff 0 18px, #1a1a1a 18px 36px); box-shadow: 0 0 14px rgba(184,242,230,.35); }
         .bloom { position: fixed; pointer-events: none; z-index: 9999; font-size: 2rem; animation: bloomUp 1.6s ease-out forwards; }
         @keyframes bloomUp { from { transform: translate(-50%,-50%) scale(.3); opacity: 1; } to { transform: translate(-50%,-260%) scale(1.6) rotate(25deg); opacity: 0; } }
+
+        /* ===== Felicitaciones de amigos y familia ===== */
+        .wishes-section { padding: 30px 15px; text-align: center; }
+        .wishes-section h2 { margin-bottom: 6px; color: #ffd6e0; }
+        .wishes-sub { opacity: .8; margin-bottom: 20px; font-size: .9rem; }
+        .wishes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 1000px; margin: 0 auto; }
+        .wish-card { border-radius: 20px; overflow: hidden; text-align: left; background: linear-gradient(160deg, rgba(184,242,230,.12), rgba(255,143,171,.14) 60%, rgba(20,10,30,.8));
+            border: 1px solid rgba(255,143,171,.45); opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1); }
+        .wish-card.show { opacity: 1; transform: none; }
+        .wish-card img, .wish-card video { width: 100%; max-height: 360px; object-fit: contain; background: #000; display: block; }
+        .wish-body { padding: 16px 18px 18px; }
+        .wish-msg { font-size: 1rem; line-height: 1.55; white-space: pre-line; }
+        .wish-from { margin-top: 12px; font-family: 'Great Vibes', cursive; font-size: 1.7rem; color: var(--secondary); }
+        .wish-from small { font-family: 'Poppins', sans-serif; font-size: .75rem; color: #b8f2e6; margin-left: 6px; }
     </style>
 </head>
 <body>
@@ -682,6 +696,15 @@ Te Lobo 🐺 ♥️
                     </div>
                 </div>
             </div>
+
+            <!-- Felicitaciones de amigos y familia -->
+            <div class="wishes-section">
+                <h2>💌 Felicitaciones de quienes te quieren 💌</h2>
+                <p class="wishes-sub">Personas que te aman quisieron decirte algo en tu día</p>
+                <div class="wishes-grid" id="wishes-grid"></div>
+            </div>
+
+            <div class="stripe-divider"></div>
 
             <!-- Contador de Segundos Juntos -->
             <div class="love-seconds-card">
@@ -1295,6 +1318,47 @@ Te Lobo 🐺 ♥️
                 card.querySelector('p').textContent = card.dataset.msg;
             });
         });
+
+
+        // ===== FELICITACIONES =====
+        // Para agregar una: sube el archivo a la raíz del repo y añade un bloque aquí.
+        // tipo: 'video' o 'foto' (o quita "media" para solo texto).
+        const FELICITACIONES = [
+            { nombre: 'Ejemplo: Mamá', relacion: 'Familia', mensaje: 'Feliz cumpleaños, hija. Eres un orgullo y te queremos mucho. 💖' },
+            // { nombre: 'Ana', relacion: 'Amiga', mensaje: 'Feliz cumple, amiga hermosa 🎂', media: 'felicitacion-ana.mp4', tipo: 'video' },
+            // { nombre: 'Papá', relacion: 'Familia', mensaje: 'Te quiero muchísimo.', media: 'felicitacion-papa.jpg', tipo: 'foto' },
+        ];
+
+        function renderWishes() {
+            const grid = document.getElementById('wishes-grid');
+            FELICITACIONES.forEach(w => {
+                const card = document.createElement('div');
+                card.className = 'wish-card';
+                if (w.media && w.tipo === 'video') {
+                    const v = document.createElement('video');
+                    v.src = encodeURI(w.media); v.controls = true; v.playsInline = true; v.preload = 'metadata';
+                    // Pausa la música de fondo mientras suena el video
+                    let resume = false;
+                    v.addEventListener('play', () => { resume = isPlaying; if (isPlaying) toggleMusic(); });
+                    const back = () => { if (resume && !isPlaying) toggleMusic(); resume = false; };
+                    v.addEventListener('pause', back); v.addEventListener('ended', back);
+                    card.appendChild(v);
+                } else if (w.media) {
+                    const im = document.createElement('img');
+                    im.src = encodeURI(w.media); im.alt = 'Felicitación de ' + w.nombre; im.loading = 'lazy';
+                    card.appendChild(im);
+                }
+                const body = document.createElement('div');
+                body.className = 'wish-body';
+                const msg = document.createElement('p'); msg.className = 'wish-msg'; msg.textContent = w.mensaje || '';
+                const from = document.createElement('div'); from.className = 'wish-from'; from.textContent = w.nombre;
+                if (w.relacion) { const sm = document.createElement('small'); sm.textContent = w.relacion; from.appendChild(sm); }
+                body.append(msg, from); card.appendChild(body);
+                grid.appendChild(card);
+                favObserver.observe(card);
+            });
+        }
+        renderWishes();
 
         function enterApp() {
             if (appStarted) return;
