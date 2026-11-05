@@ -11,7 +11,7 @@
             --primary: #ff4d6d;
             --secondary: #ff758f;
             --accent: #c9184a;
-            --bg-color: #050002;
+            --bg-color: #030005;
             --text-color: #fff0f3;
         }
 
@@ -117,12 +117,12 @@
             min-height: 100vh;
         }
 
-        /* Vista de Galaxia 3D (Inicio) */
+        /* Vista de Galaxia con Fotos Orbitando y Agujero Negro */
         #galaxy-container {
             position: relative;
             width: 100%;
             height: 100vh;
-            background: radial-gradient(circle at center, #1f0010 0%, #050002 100%);
+            background: radial-gradient(circle at center, #18000f 0%, #030003 100%);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -151,14 +151,14 @@
             font-family: 'Great Vibes', cursive;
             font-size: 3.2rem;
             color: #ff758f;
-            text-shadow: 0 0 15px rgba(255, 77, 109, 0.7);
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.8);
         }
 
-        /* Botón central en el corazón (Da click aquí) */
+        /* Botón central sobre el corazón y agujero negro */
         .heart-center-btn {
             position: absolute;
             z-index: 4;
-            background: rgba(201, 24, 74, 0.9);
+            background: linear-gradient(135deg, #c9184a, #ff4d6d);
             border: 2px solid #ff758f;
             color: white;
             padding: 12px 26px;
@@ -166,14 +166,14 @@
             font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.9);
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.9);
             animation: pulseHeart 2s infinite;
             text-align: center;
         }
 
         .heart-center-btn:hover {
-            background: #ff4d6d;
             transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(255, 77, 109, 1);
         }
 
         @keyframes pulseHeart {
@@ -187,14 +187,14 @@
             position: absolute;
             bottom: 25px;
             z-index: 4;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(8px);
             padding: 8px 18px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .music-float button {
@@ -219,7 +219,7 @@
             text-overflow: ellipsis;
         }
 
-        /* Vista de Contenido */
+        /* Vista de Contenido Principal (Al dar click en el corazón) */
         #content-page {
             display: none;
             background: #140308;
@@ -242,6 +242,46 @@
             align-self: flex-start;
             font-size: 0.85rem;
             margin-bottom: 10px;
+        }
+
+        /* Tarjeta Interactiva de Frases Aleatorias */
+        .random-phrase-card {
+            background: linear-gradient(135deg, #2a0812, #1a0208);
+            border: 2px solid var(--secondary);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 77, 109, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .random-phrase-card:active {
+            transform: scale(0.98);
+        }
+
+        .random-phrase-card h3 {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        #phrase-display {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #fff0f3;
+            font-weight: 500;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phrase-hint {
+            font-size: 0.8rem;
+            color: #ff758f;
+            margin-top: 10px;
+            opacity: 0.8;
         }
 
         /* Carta de Amor */
@@ -316,6 +356,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
 
         .gallery-card img {
@@ -386,6 +427,47 @@
             margin-top: 8px;
             letter-spacing: 1px;
         }
+
+        /* Modal de Pantalla Completa para Fotos */
+        #fullscreen-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        #fullscreen-modal img {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.4);
+        }
+
+        .close-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -396,7 +478,7 @@
     <!-- Pantalla de Cuenta Regresiva -->
     <div id="lock-screen">
         <h1>Para Mi Hermosa Mildred 💖</h1>
-        <p>Esta sorpresa galáctica se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
+        <p>Esta sorpresa cósmica se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
         <div class="countdown-container">
             <div class="countdown-box"><span id="days">00</span><label>Días</label></div>
             <div class="countdown-box"><span id="hours">00</span><label>Horas</label></div>
@@ -406,10 +488,16 @@
         <p style="font-size: 0.9rem; opacity: 0.9;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
     </div>
 
+    <!-- Modal de Pantalla Completa para Fotos -->
+    <div id="fullscreen-modal" onclick="closeFullscreen()">
+        <button class="close-fullscreen" onclick="closeFullscreen()">×</button>
+        <img id="fullscreen-img" src="" alt="Foto ampliada">
+    </div>
+
     <!-- Contenedor Principal -->
     <div id="main-content">
         
-        <!-- 1. VISTA DE INICIO: Galaxia con Corazón Sol y Frases Orbitando -->
+        <!-- 1. VISTA DE INICIO: Agujero Negro, Corazón y FOTOS en Órbita -->
         <div id="galaxy-container">
             <div class="galaxy-header">
                 <h1>Para ti ❤️</h1>
@@ -417,7 +505,7 @@
 
             <canvas id="galaxyCanvas"></canvas>
 
-            <!-- Botón en el corazón -->
+            <!-- Botón en el centro sobre el corazón y agujero negro -->
             <button class="heart-center-btn" onclick="goToContentPage()">Da click aquí ❤️</button>
 
             <!-- Reproductor de Música -->
@@ -429,9 +517,16 @@
             </div>
         </div>
 
-        <!-- 2. VISTA DE CONTENIDO -->
+        <!-- 2. VISTA DE CONTENIDO (Se abre al dar click en el corazón) -->
         <div id="content-page">
-            <button class="back-galaxy-btn" onclick="goToGalaxy()">⬅ Volver a la Galaxia</button>
+            <button class="back-galaxy-btn" onclick="goToGalaxy()">⬅ Volver al Universo</button>
+
+            <!-- Frases Aleatorias Interactivas -->
+            <div class="random-phrase-card" onclick="showRandomPhrase()">
+                <h3>✨ Razones por las cuales te amo ✨</h3>
+                <div id="phrase-display">¡Toca aquí para descubrir una razón por la cual te amo! ❤️</div>
+                <div class="phrase-hint">(Toca la tarjeta para cambiar de frase)</div>
+            </div>
 
             <!-- Carta de Amor -->
             <div class="letter-container">
@@ -450,49 +545,9 @@ Te Lobo 🐺 ♥️
 
             <!-- Galería de Recuerdos Horizontal -->
             <div class="gallery-section">
-                <h2>📸 Galería de Recuerdos (Desliza a la derecha)</h2>
-                <div class="horizontal-scroll">
-                    <div class="gallery-card"><img src="20200531_172821.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="20200614_173856.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="20200913_180545.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="20200919_162758.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="20200923_213559.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20210403-WA0030.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20210502-WA0003.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20210502-WA0005.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20210502-WA0008.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20211224-WA0009.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20220601-WA0016.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20220601-WA0022.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20220716-WA0085.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20230415-WA0083.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20230430-WA0018.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20230430-WA0022.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20230709-WA0004.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG-20230919-WA0027.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_1029.png" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_1076.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_1471.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201004_172732.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201005_195210.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201101_131830_1.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201101_150054.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201101_150219.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201102_145054_1.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201102_145649.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20201224_230051.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20210101_021447.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20210131_170109.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20210401_151049.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20210403_152702.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20211009_192537.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20220320_130650.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20220321_170951.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20220409_130904.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20220617_230050474.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20221001_184936281.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20221202_222700283.jpg" alt="Recuerdo"></div>
-                    <div class="gallery-card"><img src="IMG_20230114_091326300.jpg" alt="Recuerdo"></div>
+                <h2>📸 Galería de Recuerdos (Toca cualquier foto para ampliarla)</h2>
+                <div class="horizontal-scroll" id="horizontal-gallery">
+                    <!-- Las fotos se cargarán dinámicamente aquí -->
                 </div>
             </div>
 
@@ -523,7 +578,7 @@ Te Lobo 🐺 ♥️
         </div>
     </div>
 
-    <!-- Scripts de la Galaxia 3D y Funcionalidades -->
+    <!-- Scripts -->
     <script>
         const lovePhrases = [
             "1. Por lo dulce que es cuando me regala una sonrisa.",
@@ -595,13 +650,49 @@ Te Lobo 🐺 ♥️
             "67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.",
             "68. Por su risa contagiosa que se escucha desde el fondo de su alma.",
             "69. Por cómo cuida de sus cosas y de su entorno con esmero.",
-            "70. Por la ternura con la que me regaña cuando hago alguna tontería.",
+            "70. Por la ternura con la que regaña cuando hago alguna tontería.",
             "71. Por cómo se despide de mí y cómo me recibe después de vernos.",
             "72. Por los silencios compartidos que nunca se sienten incómodos con ella.",
             "73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.",
             "74. Por la mujer tan chingona y admirable en la que se ha convertido.",
             "75. Por cómo enfrenta los retos de la vida sin cobardía y por ser mi todo."
         ];
+
+        const photoFiles = [
+            "20200531_172821.jpg", "20200614_173856.jpg", "20200913_180545.jpg", "20200919_162758.jpg",
+            "20200923_213559.jpg", "IMG-20210403-WA0030.jpg", "IMG-20210502-WA0003.jpg", "IMG-20210502-WA0005.jpg",
+            "IMG-20210502-WA0008.jpg", "IMG-20211224-WA0009.jpg", "IMG-20220601-WA0016.jpg", "IMG-20220601-WA0022.jpg",
+            "IMG-20220716-WA0085.jpg", "IMG-20230415-WA0083.jpg", "IMG-20230430-WA0018.jpg", "IMG-20230430-WA0022.jpg",
+            "IMG-20230709-WA0004.jpg", "IMG-20230919-WA0027.jpg", "IMG_1029.png", "IMG_1076.jpg", "IMG_1471.jpg",
+            "IMG_20201004_172732.jpg", "IMG_20201005_195210.jpg", "IMG_20201101_131830_1.jpg", "IMG_20201101_150054.jpg",
+            "IMG_20201101_150219.jpg", "IMG_20201102_145054_1.jpg", "IMG_20201102_145649.jpg", "IMG_20201224_230051.jpg",
+            "IMG_20210101_021447.jpg", "IMG_20210131_170109.jpg", "IMG_20210401_151049.jpg", "IMG_20210403_152702.jpg",
+            "IMG_20211009_192537.jpg", "IMG_20220320_130650.jpg", "IMG_20220321_170951.jpg", "IMG_20220409_130904.jpg",
+            "IMG_20220617_230050474.jpg", "IMG_20221001_184936281.jpg", "IMG_20221202_222700283.jpg", "IMG_20230114_091326300.jpg"
+        ];
+
+        const galleryContainer = document.getElementById('horizontal-gallery');
+        photoFiles.forEach(photo => {
+            const card = document.createElement('div');
+            card.className = 'gallery-card';
+            card.onclick = () => openFullscreen(photo);
+            card.innerHTML = `<img src="${encodeURI(photo)}" alt="Recuerdo">`;
+            galleryContainer.appendChild(card);
+        });
+
+        function openFullscreen(src) {
+            document.getElementById('fullscreen-img').src = encodeURI(src);
+            document.getElementById('fullscreen-modal').style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            document.getElementById('fullscreen-modal').style.display = 'none';
+        }
+
+        function showRandomPhrase() {
+            const randomIndex = Math.floor(Math.random() * lovePhrases.length);
+            document.getElementById('phrase-display').innerText = lovePhrases[randomIndex];
+        }
 
         const canvas = document.getElementById('galaxyCanvas');
         const ctx = canvas.getContext('2d');
@@ -619,50 +710,72 @@ Te Lobo 🐺 ♥️
         let isDragging = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
+        let orbitingPhotos = [];
 
         function initGalaxy() {
             particles = [];
-            // Corazón central denso y completo (efecto sol / núcleo brillante)
-            for (let i = 0; i < 600; i++) {
+            orbitingPhotos = [];
+
+            for (let i = 0; i < 200; i++) {
+                let angle = Math.random() * Math.PI * 2;
+                let r = 20 + Math.random() * 50;
+                particles.push({
+                    x: Math.cos(angle) * r,
+                    y: Math.sin(angle) * r,
+                    z: (Math.random() - 0.5) * 20,
+                    isBlackHoleRing: true,
+                    color: i % 2 === 0 ? '#ff758f' : '#ff4d6d'
+                });
+            }
+
+            for (let i = 0; i < 400; i++) {
                 let t = Math.random() * Math.PI * 2;
                 let x = 16 * Math.pow(Math.sin(t), 3);
                 let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
                 particles.push({
-                    x: x * 6,
-                    y: y * 6,
-                    z: (Math.random() - 0.5) * 40,
-                    text: null,
+                    x: x * 5.5,
+                    y: y * 5.5,
+                    z: (Math.random() - 0.5) * 30,
                     isHeart: true,
-                    color: i % 2 === 0 ? '#ff4d6d' : '#ff758f'
+                    color: '#ff4d6d'
                 });
             }
 
-            // Las 75 frases orbitando alrededor en una esfera amplia 3D
-            lovePhrases.forEach((phrase) => {
-                let theta = Math.random() * 2 * Math.PI;
+            photoFiles.forEach((photo, index) => {
+                let theta = (index / photoFiles.length) * 2 * Math.PI;
                 let phi = Math.acos((Math.random() * 2) - 1);
-                let radius = 220 + Math.random() * 130;
+                let radius = 230 + Math.random() * 120;
 
-                particles.push({
+                let imgObj = new Image();
+                imgObj.src = encodeURI(photo);
+
+                orbitingPhotos.push({
                     x: radius * Math.sin(phi) * Math.cos(theta),
                     y: radius * Math.sin(phi) * Math.sin(theta),
                     z: radius * Math.cos(phi),
-                    text: phrase,
-                    isHeart: false,
-                    color: '#ffccd5'
+                    img: imgObj,
+                    src: photo,
+                    size: 45
                 });
             });
         }
 
-        let animationFrameId;
         function animateGalaxy() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             let cx = canvas.width / 2;
             let cy = canvas.height / 2;
 
             if (!isDragging) {
-                angleY += 0.0025; // Órbita suave automática
+                angleY += 0.0025;
             }
+
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#ff4d6d";
+            ctx.stroke();
 
             particles.forEach(p => {
                 let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
@@ -679,23 +792,79 @@ Te Lobo 🐺 ♥️
                 let y2proj = cy + y2 * scale;
 
                 if (scale > 0) {
-                    if (p.isHeart) {
-                        ctx.fillStyle = p.color;
-                        ctx.beginPath();
-                        ctx.arc(x2proj, y2proj, 2.2 * scale, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        ctx.font = `${Math.max(10, 12 * scale)}px Poppins, sans-serif`;
-                        ctx.fillStyle = `rgba(255, 204, 213, ${Math.min(1, scale * 0.95)})`;
-                        ctx.fillText(p.text, x2proj, y2proj);
-                    }
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(x2proj, y2proj, (p.isHeart ? 2 : 1.5) * scale, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             });
 
-            animationFrameId = requestAnimationFrame(animateGalaxy);
+            orbitingPhotos.forEach(p => {
+                let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.z * cosY + p.x * sinY;
+
+                let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = z1 * cosX + p.y * sinX;
+
+                let fov = 400;
+                let scale = fov / (fov + z2 + 300);
+                let x2proj = cx + x1 * scale;
+                let y2proj = cy + y2 * scale;
+
+                if (scale > 0) {
+                    let currentSize = p.size * scale;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(x2proj, y2proj, currentSize / 2, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.clip();
+                    
+                    if (p.img.complete) {
+                        ctx.drawImage(p.img, x2proj - currentSize/2, y2proj - currentSize/2, currentSize, currentSize);
+                    }
+                    ctx.restore();
+
+                    ctx.lineWidth = 2 * scale;
+                    ctx.strokeStyle = "#ff758f";
+                    ctx.beginPath();
+                    ctx.arc(x2proj, y2proj, currentSize / 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            });
+
+            requestAnimationFrame(animateGalaxy);
         }
 
-        // Interactividad táctil y de mouse para girar el sistema
+        canvas.addEventListener('click', e => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            let cx = canvas.width / 2;
+            let cy = canvas.height / 2;
+
+            orbitingPhotos.forEach(p => {
+                let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.z * cosY + p.x * sinY;
+                let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = z1 * cosX + p.y * sinX;
+
+                let fov = 400;
+                let scale = fov / (fov + z2 + 300);
+                let x2proj = cx + x1 * scale;
+                let y2proj = cy + y2 * scale;
+                let currentSize = p.size * scale;
+
+                let dist = Math.hypot(clickX - x2proj, clickY - y2proj);
+                if (dist < currentSize / 2) {
+                    openFullscreen(p.src);
+                }
+            });
+        });
+
         canvas.addEventListener('mousedown', e => {
             isDragging = true;
             lastMouseX = e.clientX;
@@ -724,7 +893,6 @@ Te Lobo 🐺 ♥️
         });
         window.addEventListener('touchend', () => { isDragging = false; });
 
-        // Navegación entre vistas
         function goToContentPage() {
             document.getElementById('galaxy-container').style.display = 'none';
             document.getElementById('content-page').style.display = 'flex';
@@ -736,13 +904,11 @@ Te Lobo 🐺 ♥️
             document.getElementById('galaxy-container').style.display = 'flex';
         }
 
-        // Carta de Amor
         function toggleLetter() {
             const letter = document.getElementById('letter-text');
             letter.style.display = letter.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Reproductor de Música Automático
         const playlist = [
             { src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"), title: "What Took You So Long" },
             { src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"), title: "Follow You" },
@@ -770,7 +936,7 @@ Te Lobo 🐺 ♥️
                 isPlaying = true;
                 document.getElementById("play-music-btn").innerText = "⏸";
             }).catch(e => {
-                console.log("Autoplay restringido por navegador, esperando toque:", e);
+                console.log("Autoplay restringido, esperando toque:", e);
                 document.addEventListener('click', function unlockAudio() {
                     audioPlayer.play();
                     isPlaying = true;
@@ -810,14 +976,12 @@ Te Lobo 🐺 ♥️
             document.getElementById("play-music-btn").innerText = "⏸";
         }
 
-        // Canjear cupones
         function claimCoupon(element, message) {
             alert(message);
             element.style.opacity = "0.5";
             element.querySelector("p").innerText = "¡Canjeado con éxito! ❤️";
         }
 
-        // Contador de Segundos Juntos
         function updateLoveSeconds() {
             const loveStartDate = new Date("February 14, 2020 00:00:00").getTime();
             const now = new Date().getTime();
@@ -825,7 +989,6 @@ Te Lobo 🐺 ♥️
             document.getElementById("love-seconds").innerText = secondsTogether.toLocaleString();
         }
 
-        // Cuenta regresiva
         const targetDate = new Date("November 9, 2026 11:11:00").getTime();
         function checkCountdown() {
             const now = new Date().getTime();
