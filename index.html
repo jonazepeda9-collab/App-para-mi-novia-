@@ -817,261 +817,216 @@ Te Lobo 🐺 ♥️
             }, 3500);
         }
 
-        // Configuración de la Galaxia 3D con Agujero Negro Realista (Disco de Acreción + Chorro de Plasma)
+        // Galaxia 3D (Three.js): agujero negro, disco espiral, corazón y fotos como planetas
         const canvas = document.getElementById('galaxyCanvas');
-        const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        let accretionDisk = [];
-        let plasmaJet = [];
-        let heartParticles = [];
-        let angleX = 0.3; // Inclinación en perspectiva 3D para apreciar el disco ovalado
-        let angleY = 0;
+        let angleX = 0.38; // inclinación de la cámara
+        let angleY = 0;    // giro horizontal
+        let camDist = 48;  // distancia de la cámara (zoom)
         let isDragging = false;
         let lastMouseX = 0;
         let lastMouseY = 0;
-        let orbitingPhotos = [];
-        let zoom = 1;
         let dragMoved = 0;
+        let galaxyReady = false;
+        let galaxyScene = null; // { THREE, camera, planets, enter, heart, raycaster }
+        const GALAXY_PHRASES = ['Eres mi razón de ser 💗', 'Te amo, Mildred', 'Eres mi persona favorita ⭐', 'Contigo hasta el final', 'Mi equipo incondicional', 'Te Lobo 🐺', 'Cada día te quiero más', 'Gracias por existir', 'Eres mi hogar 🏡', 'Mi cómplice favorita'];
 
-        // Proyección 3D compartida por el dibujo y la detección de toques
-        function projectPoint(p, cx, cy) {
-            let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-            let x1 = p.x * cosY - p.z * sinY;
-            let z1 = p.z * cosY + p.x * sinY;
-
-            let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-            let y2 = p.y * cosX - z1 * sinX;
-            let z2 = z1 * cosX + p.y * sinX;
-
-            let fov = 400;
-            let scale = (fov / (fov + z2 + 300)) * zoom;
-            return { x: cx + x1 * scale, y: cy + y2 * scale, scale: scale, z2: z2 };
-        }
-        function initGalaxy() {
-            accretionDisk = [];
-            plasmaJet = [];
-            heartParticles = [];
-            orbitingPhotos = [];
-
-            // 1. Disco de Acreción Masivo en Espiral (Tonos Naranjas, Cobrizos y Dorados estilo la foto)
-            for (let i = 0; i < 800; i++) {
-                let angle = Math.random() * Math.PI * 2;
-                let r = 40 + Math.random() * 220;
-                accretionDisk.push({
-                    x: Math.cos(angle) * r,
-                    y: Math.sin(angle) * (r * 0.35), // Achatado para perspectiva de disco
-                    z: (Math.random() - 0.5) * 20,
-                    color: i % 3 === 0 ? '#ffb703' : (i % 2 === 0 ? '#ff8500' : '#d43d00'),
-                    size: Math.random() * 2 + 1
-                });
-            }
-
-            // 2. Chorro de Plasma (Jet superior brillante)
-            for (let i = 0; i < 200; i++) {
-                let h = Math.random() * 180;
-                plasmaJet.push({
-                    x: (Math.random() - 0.5) * (h * 0.15),
-                    y: -40 - h,
-                    z: (Math.random() - 0.5) * 15,
-                    color: i % 2 === 0 ? '#ffffff' : '#90e0ef',
-                    size: Math.random() * 1.8 + 0.8
-                });
-            }
-
-            // 3. Corazón 3D brillante y denso justo en el centro sobre el agujero negro
-            for (let i = 0; i < 700; i++) {
-                let t = Math.random() * Math.PI * 2;
-                let x = 16 * Math.pow(Math.sin(t), 3);
-                let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-                heartParticles.push({
-                    x: x * 5.5,
-                    y: y * 5.5 - 20, // Centrado sobre el horizonte de eventos
-                    z: (Math.random() - 0.5) * 30,
-                    color: i % 3 === 0 ? '#ffffff' : '#ff4d6d',
-                    size: Math.random() * 2 + 1.2
-                });
-            }
-
-            // 4. FOTOS orbitando como planetas / estrellas estelares
-            photoFiles.forEach((photo, index) => {
-                let theta = (index / photoFiles.length) * 2 * Math.PI;
-                let phi = Math.acos((Math.random() * 2) - 1);
-                let radius = 280 + Math.random() * 140;
-
-                let imgObj = new Image();
-                imgObj.src = encodeURI(photo);
-
-                orbitingPhotos.push({
-                    x: radius * Math.sin(phi) * Math.cos(theta),
-                    y: radius * Math.sin(phi) * Math.sin(theta) * 0.5,
-                    z: radius * Math.cos(phi),
-                    img: imgObj,
-                    src: photo,
-                    speed: (0.0008 + Math.random() * 0.0025) * (index % 2 ? 1 : -1),
-                    size: 70
-                });
-            });
+        function showGalaxyFallback() {
+            const btn = document.createElement('button');
+            btn.className = 'back-galaxy-btn';
+            btn.style.cssText = 'position:absolute;z-index:5;top:50%;font-size:1.1rem;padding:12px 22px;';
+            btn.innerText = 'Entrar ❤️';
+            btn.onclick = goToContentPage;
+            document.getElementById('galaxy-container').appendChild(btn);
         }
 
-        function animateGalaxy() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let cx = canvas.width / 2;
-            let cy = canvas.height / 2;
+        async function initGalaxy() {
+            if (galaxyReady) return;
+            galaxyReady = true;
 
-            if (!isDragging) {
-                angleY += 0.0025;
-            }
-
-            // Cada foto gira lentamente en su propia órbita
-            orbitingPhotos.forEach(p => {
-                let c = Math.cos(p.speed), s = Math.sin(p.speed);
-                let nx = p.x * c - p.z * s;
-                p.z = p.z * c + p.x * s;
-                p.x = nx;
-            });
-
-            const beat = 1 + Math.pow(Math.sin(performance.now() / 1000 * 3), 8) * 0.1; // latido del corazón
-
-            const project = p => projectPoint(p, cx, cy);
-
-            // Dibuja una foto como planeta (recorte centrado, sin deformar)
-            function drawPhoto(item) {
-                const p = item.p, proj = item.proj;
-                if (proj.scale <= 0) return;
-                let currentSize = p.size * proj.scale;
-                ctx.save();
-                ctx.globalAlpha = Math.min(1, Math.max(0.45, 1 - proj.z2 / 900));
-                ctx.shadowColor = '#ff758f';
-                ctx.shadowBlur = 12 * proj.scale;
-                ctx.beginPath();
-                ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.clip();
-                if (p.img.complete && p.img.naturalWidth) {
-                    const m = Math.min(p.img.naturalWidth, p.img.naturalHeight);
-                    ctx.drawImage(p.img, (p.img.naturalWidth - m) / 2, (p.img.naturalHeight - m) / 2, m, m,
-                        proj.x - currentSize / 2, proj.y - currentSize / 2, currentSize, currentSize);
-                } else {
-                    ctx.fillStyle = '#ff758f';
-                    ctx.fill();
-                }
-                ctx.restore();
-                ctx.lineWidth = 2.5 * proj.scale;
-                ctx.strokeStyle = "#ff758f";
-                ctx.beginPath();
-                ctx.arc(proj.x, proj.y, currentSize / 2, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            // Fotos ordenadas por profundidad: las lejanas van detrás del agujero negro
-            const photoItems = orbitingPhotos.map(p => ({ p, proj: project(p) })).sort((a, b) => b.proj.z2 - a.proj.z2);
-            photoItems.filter(i => i.proj.z2 > 0).forEach(drawPhoto);
-
-            // A. Renderizar Disco de Acreción
-            accretionDisk.forEach(p => {
-                let proj = project(p);
-                if (proj.scale > 0) {
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-
-            // B. Sombra / Horizonte de Eventos del Agujero Negro Central (Negro Absoluto con anillo fotónico brillante)
-            ctx.save();
-            ctx.shadowColor = '#ff8500';
-            ctx.shadowBlur = 25;
-            ctx.fillStyle = "#000000";
-            ctx.beginPath();
-            ctx.arc(cx, cy, 42 * zoom, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.lineWidth = 3.5;
-            ctx.strokeStyle = "#ffb703";
-            ctx.stroke();
-            ctx.restore();
-
-            // C. Renderizar Chorro de Plasma
-            plasmaJet.forEach(p => {
-                let proj = project(p);
-                if (proj.scale > 0) {
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-
-            // D. Renderizar Corazón 3D
-            heartParticles.forEach(p => {
-                let proj = project({ x: p.x * beat, y: (p.y + 20) * beat - 20, z: p.z * beat });
-                if (proj.scale > 0) {
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-
-            // E. Fotos cercanas (delante del agujero negro)
-            photoItems.filter(i => i.proj.z2 <= 0).forEach(drawPhoto);
-
-            // F. Texto limpio "Da click aquí ❤️" en el centro exacto (sin botón ni círculos)
-            ctx.save();
-            ctx.font = '600 17px Poppins, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = '#ff4d6d';
-            ctx.shadowBlur = 14;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText("Da click aquí ❤️", cx, cy + 55);
-            ctx.restore();
-
-            requestAnimationFrame(animateGalaxy);
-        }
-
-        // Detección de clics/toques mejorada y garantizada para fotos y centro
-        function handleCanvasInteraction(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = clientX - rect.left;
-            const clickY = clientY - rect.top;
-            let cx = canvas.width / 2;
-            let cy = canvas.height / 2;
-
-            // Verificar si hizo clic en el centro (para abrir el contenido)
-            let distCenter = Math.hypot(clickX - cx, clickY - (cy + 55));
-            if (distCenter < 70) {
-                goToContentPage();
+            let THREE;
+            try {
+                THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+            } catch (err) {
+                console.error('No se pudo cargar three.js', err);
+                showGalaxyFallback();
                 return;
             }
 
-            // Verificar si hizo clic en alguna foto orbitante (la más cercana primero)
-            let sortedPhotos = orbitingPhotos.map(p => {
-                const pr = projectPoint(p, cx, cy);
-                return { src: p.src, projX: pr.x, projY: pr.y, currentSize: p.size * pr.scale, z2: pr.z2 };
-            }).sort((a, b) => a.z2 - b.z2);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 700);
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            renderer.setSize(innerWidth, innerHeight, false);
 
-            for (let p of sortedPhotos) {
-                let dist = Math.hypot(clickX - p.projX, clickY - p.projY);
-                if (dist < p.currentSize / 2 + 10) { // Margen de tolerancia táctil optimizado
-                    openFullscreen(p.src);
-                    return;
+            const glow = (() => {
+                const c = document.createElement('canvas'); c.width = c.height = 64;
+                const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+                gr.addColorStop(0, '#fff'); gr.addColorStop(.4, 'rgba(255,255,255,.5)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+                g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+                return new THREE.CanvasTexture(c);
+            })();
+
+            const makePoints = (pos, col, size) => {
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+                geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+                return new THREE.Points(geo, new THREE.PointsMaterial({
+                    size, map: glow, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+                }));
+            };
+
+            // Estrellas de fondo
+            {
+                const p = [], c = [];
+                for (let i = 0; i < 2500; i++) {
+                    const r = 110 + Math.random() * 200, t = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1);
+                    p.push(r * Math.sin(ph) * Math.cos(t), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(t));
+                    const b = .4 + Math.random() * .6; c.push(b, b * .7, b * .8);
                 }
+                scene.add(makePoints(p, c, 1.5));
             }
+
+            // Disco espiral del agujero negro
+            const disk = (() => {
+                const p = [], c = [], col = new THREE.Color();
+                for (let i = 0; i < 22000; i++) {
+                    const r = 4 + Math.pow(Math.random(), 1.6) * 36;
+                    const a = (i % 3) * 2.094 + r * 0.3 + (Math.random() - .5) * .6;
+                    p.push(Math.cos(a) * r, (Math.random() - .5) * (1 + r * .04), Math.sin(a) * r);
+                    col.setHSL(0.97 - r / 36 * 0.08, 1, 0.75 - r / 36 * 0.45); c.push(col.r, col.g, col.b);
+                }
+                const d = makePoints(p, c, 0.35); scene.add(d); return d;
+            })();
+
+            // Horizonte de eventos + anillo de luz
+            scene.add(new THREE.Mesh(new THREE.SphereGeometry(3.2, 48, 48), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+            const ring = new THREE.Mesh(new THREE.RingGeometry(3.3, 4.6, 96),
+                new THREE.MeshBasicMaterial({ color: 0xff4d6d, transparent: true, opacity: .55, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+            ring.rotation.x = Math.PI / 2; scene.add(ring);
+
+            // Corazón 3D de partículas
+            const heart = (() => {
+                const p = [], c = [], col = new THREE.Color();
+                for (let i = 0; i < 9000; i++) {
+                    const t = Math.random() * 6.283;
+                    const x = 16 * Math.pow(Math.sin(t), 3);
+                    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                    const s = Math.pow(Math.random(), .5);
+                    const z = (Math.random() - .5) * 8 * s * (1 - Math.abs(x) / 18);
+                    p.push(x * s * .42, y * s * .42, z);
+                    col.setHSL(.96 + Math.random() * .03, 1, .55 + Math.random() * .25); c.push(col.r, col.g, col.b);
+                }
+                const h = makePoints(p, c, 0.3); h.position.y = 11; scene.add(h); return h;
+            })();
+
+            // Texto "Da click aquí" bajo el corazón
+            const enter = (() => {
+                const c = document.createElement('canvas'); c.width = 512; c.height = 96;
+                const g = c.getContext('2d'); g.font = '600 44px Poppins, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+                g.shadowColor = '#ff4d6d'; g.shadowBlur = 16; g.fillStyle = '#fff'; g.fillText('Da click aquí ❤️', 256, 50);
+                const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
+                s.scale.set(10, 1.9, 1); s.position.set(0, -6.5, 0); s.renderOrder = 10; scene.add(s); return s;
+            })();
+
+            // Fotos como planetas (recorte circular centrado, sin deformar)
+            const circleTexture = img => {
+                const n = 256, c = document.createElement('canvas'); c.width = c.height = n;
+                const g = c.getContext('2d');
+                g.save(); g.beginPath(); g.arc(n / 2, n / 2, n / 2 - 6, 0, 6.283); g.clip();
+                if (img) {
+                    const m = Math.min(img.naturalWidth, img.naturalHeight);
+                    g.drawImage(img, (img.naturalWidth - m) / 2, (img.naturalHeight - m) / 2, m, m, 0, 0, n, n);
+                } else {
+                    g.fillStyle = '#7a1230'; g.fillRect(0, 0, n, n);
+                    g.font = '120px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('💖', n / 2, n / 2 + 6);
+                }
+                g.restore();
+                g.lineWidth = 8; g.strokeStyle = '#ff8fa3'; g.beginPath(); g.arc(n / 2, n / 2, n / 2 - 6, 0, 6.283); g.stroke();
+                const tex = new THREE.CanvasTexture(c);
+                tex.colorSpace = THREE.SRGBColorSpace;
+                return tex;
+            };
+            const planets = photoFiles.map((photo, i) => {
+                const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: circleTexture(null), transparent: true }));
+                const s = 3.4 + Math.random() * 1.2; spr.scale.set(s, s, 1);
+                const radius = 12 + (i % 5) * 5 + Math.random() * 1.5;
+                spr.userData = { src: photo, radius, ang: i / photoFiles.length * 6.283 * 2.3, speed: .04 + .22 / radius, y: (Math.random() - .5) * 5 };
+                scene.add(spr);
+                const img = new Image();
+                img.onload = () => { spr.material.map = circleTexture(img); spr.material.needsUpdate = true; };
+                img.src = encodeURI(photo);
+                return spr;
+            });
+
+            // Frases flotantes
+            const phrases = GALAXY_PHRASES.map((t, i) => {
+                const c = document.createElement('canvas'); c.width = 512; c.height = 64;
+                const g = c.getContext('2d'); g.font = '34px Poppins, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+                g.shadowColor = '#ff4d6d'; g.shadowBlur = 10; g.fillStyle = '#ffe3ea'; g.fillText(t, 256, 34);
+                const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, opacity: .8, depthWrite: false }));
+                spr.scale.set(6.4, .8, 1);
+                spr.userData = { radius: 32 + (i % 3) * 4, ang: i / GALAXY_PHRASES.length * 6.283, speed: .02 + Math.random() * .02, y: (Math.random() - .5) * 14 };
+                scene.add(spr); return spr;
+            });
+
+            addEventListener('resize', () => {
+                camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+                renderer.setSize(innerWidth, innerHeight, false);
+            });
+
+            galaxyScene = { THREE, camera, planets, enter, heart, raycaster: new THREE.Raycaster() };
+
+            const clock = new THREE.Clock();
+            renderer.setAnimationLoop(() => {
+                if (document.getElementById('galaxy-container').style.display === 'none') return; // en la página de contenido no se dibuja
+                const t = clock.getElapsedTime();
+                disk.rotation.y = t * .04;
+                ring.material.opacity = .45 + Math.sin(t * 2) * .1;
+                heart.scale.setScalar(1 + Math.pow(Math.sin(t * 3), 8) * .12); heart.rotation.y = t * .3;
+                enter.material.opacity = .75 + Math.sin(t * 2.5) * .25;
+                for (const p of [...planets, ...phrases]) {
+                    const d = p.userData, a = d.ang + t * d.speed;
+                    p.position.set(Math.cos(a) * d.radius, d.y + Math.sin(t + d.ang) * .4, Math.sin(a) * d.radius);
+                }
+                if (!isDragging) angleY += .0008;
+                camera.position.set(Math.sin(angleY) * Math.cos(angleX) * camDist, Math.sin(angleX) * camDist + 4, Math.cos(angleY) * Math.cos(angleX) * camDist);
+                camera.lookAt(0, 4, 0);
+                renderer.render(scene, camera);
+            });
+        }
+
+        // Detección de toques: fotos (planetas), texto central y corazón
+        function handleCanvasInteraction(clientX, clientY) {
+            if (!galaxyScene) return;
+            const { THREE, camera, planets, enter, heart, raycaster } = galaxyScene;
+            const rect = canvas.getBoundingClientRect();
+            const ndc = new THREE.Vector2(
+                ((clientX - rect.left) / rect.width) * 2 - 1,
+                -((clientY - rect.top) / rect.height) * 2 + 1
+            );
+            camera.updateMatrixWorld();
+            raycaster.setFromCamera(ndc, camera);
+
+            const hit = raycaster.intersectObjects([...planets, enter])[0];
+            if (hit) {
+                if (hit.object === enter) goToContentPage();
+                else openFullscreen(hit.object.userData.src);
+                return;
+            }
+
+            // Tocar el corazón también abre el contenido
+            const hp = heart.position.clone().project(camera);
+            const hx = (hp.x + 1) / 2 * rect.width + rect.left;
+            const hy = (1 - hp.y) / 2 * rect.height + rect.top;
+            if (Math.hypot(clientX - hx, clientY - hy) < Math.min(rect.width, rect.height) * 0.12) goToContentPage();
         }
 
         // Controles unificados (mouse y táctil): arrastrar gira, pellizcar o rueda hace zoom.
         // Un arrastre no cuenta como clic, así que no se abre una foto por accidente.
         const activePointers = new Map();
         let pinchDist = 0;
-        const clampZoom = z => Math.min(1.8, Math.max(0.6, z));
+        const clampDist = d => Math.min(95, Math.max(26, d));
 
         canvas.addEventListener('pointerdown', e => {
             canvas.setPointerCapture(e.pointerId);
@@ -1088,7 +1043,7 @@ Te Lobo 🐺 ♥️
             if (activePointers.size === 2) {
                 const [a, b] = [...activePointers.values()];
                 const d = Math.hypot(a.x - b.x, a.y - b.y);
-                if (pinchDist) zoom = clampZoom(zoom * d / pinchDist);
+                if (pinchDist) camDist = clampDist(camDist * pinchDist / d);
                 pinchDist = d;
                 dragMoved = 99;
                 return;
@@ -1114,7 +1069,7 @@ Te Lobo 🐺 ♥️
         canvas.addEventListener('pointercancel', e => endPointer(e, false));
         canvas.addEventListener('wheel', e => {
             e.preventDefault();
-            zoom = clampZoom(zoom - e.deltaY * 0.001);
+            camDist = clampDist(camDist + e.deltaY * 0.03);
         }, { passive: false });
 
         function goToContentPage() {
@@ -1226,7 +1181,6 @@ Te Lobo 🐺 ♥️
             startWarpSpeed(() => {
                 document.getElementById("main-content").style.display = "flex";
                 initGalaxy();
-                animateGalaxy();
                 updateLoveSeconds();
                 playAudioAutomatically();
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
