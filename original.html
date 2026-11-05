@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi amor, Mildred 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ff758f;
+            --bg-color: #fff0f3;
+            --text-color: #590d22;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Pantalla de bloqueo / Cuenta regresiva */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff758f, #ff4d6d);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #lock-screen h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #lock-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 70px;
+            backdrop-filter: blur(5px);
+        }
+
+        .countdown-box span {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .countdown-box label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        /* Contenido principal de la app (Oculto hasta la fecha) */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+        }
+
+        .container {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Secciones */
+        .section-card {
+            background: var(--bg-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.1);
+        }
+
+        .section-card h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Carta */
+        .letter-content {
+            white-space: pre-line;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #4a0e17;
+        }
+
+        /* Galería */
+        .gallery-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .gallery-scroll iframe, .gallery-scroll img {
+            width: 220px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            flex-shrink: 0;
+            border: 2px solid var(--secondary);
+            background: #eee;
+        }
+
+        /* Razones */
+        .reason-box {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Corazones flotantes de fondo */
+        .heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.3);
+            animation: floatUp 4s linear infinite;
+            z-index: 0;
+            font-size: 1.5rem;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Cuenta Regresiva Estricta -->
+    <div id="lock-screen">
+        <h1>Para Mi Hermosa Mildred 💖</h1>
+        <p>Esta sorpresa se abrirá exactamente el 9 de noviembre a las 11:11 AM.</p>
+        <div class="countdown-container">
+            <div class="countdown-box"><span id="days">00</span><label>Días</label></div>
+            <div class="countdown-box"><span id="hours">00</span><label>Horas</label></div>
+            <div class="countdown-box"><span id="minutes">00</span><label>Min</label></div>
+            <div class="countdown-box"><span id="seconds">00</span><label>Seg</label></div>
+        </div>
+        <p style="font-size: 0.9rem; opacity: 0.8;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
+    </div>
+
+    <!-- Contenido Principal de la App -->
+    <div id="main-content" style="display: none;">
+        <header>
+            <h1>¡Feliz Cumpleaños!</h1>
+            <p>6 años y 8 meses de caminar juntos 🐺♥️</p>
+        </header>
+
+        <div class="container">
+            <!-- Sección de la Carta -->
+            <div class="section-card">
+                <h2>💌 Carta para ti</h2>
+                <div class="letter-content">¡Feliz cumpleaños, hermosa!
+​La verdad es que noviembre siempre es un mes muy especial, pero este año me puse a hacer cuentas y me di cuenta de que ya vamos por los 6 años y 8 meses. Qué rápido y qué bonito se ha pasado el tiempo contigo.
+​Quería escribirte esto para recordarte lo mucho que te amo y lo orgulloso que estoy de ti. Gracias por aguantarme, por alcahuetear mis locuras, por las pláticas de sobremesa y por ser mi equipo incondicional en todo momento. Nacer tú y coincidir nosotros ha sido de lo mejor que me ha pasado en la vida.
+​Espero que este día lo disfrutes muchísimo, que te consientan como te mereces y que este nuevo año de vida venga cargado de puras cosas chingonas para ti. Aquí voy a estar yo, celebrándote y apoyándote en cada paso.
+​Te amo muchísimo. ¡A celebrar!
+
+Te Lobo 🐺 ♥️</div>
+            </div>
+
+            <!-- Sección de Galería con los 38 Links -->
+            <div class="section-card">
+                <h2>📸 Nuestros Recuerdos</h2>
+                <div class="gallery-scroll">
+                    <!-- 38 Fotos integradas -->
+                    <a href="https://photos.app.goo.gl/Bk4FoJzSy47o7Zk46" target="_blank"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/rWARAbWrpVeDxjBe8" target="_blank"><img src="https://images.unsplash.com/photo-1522748955767-123479b47e17?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/xZ1cvUDQmZBjzJkv5" target="_blank"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/Yt5BDVv8sP4ALhUA9" target="_blank"><img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/38PhSdc17NAEzh8L9" target="_blank"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/7b1MkVZsemQKHjKM7" target="_blank"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/ND2ofuZ5kRp1QzXx5" target="_blank"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/teoPtdJfiaUaZ8aU8" target="_blank"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/jqKfK7ff82XLZMn27" target="_blank"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/zW3hRnozuU7QWfV6A" target="_blank"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/xkzqcUYuwakB72fg9" target="_blank"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/kcw4WCbf3gWMzyEg9" target="_blank"><img src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/awsJHRAegnuzKv3G8" target="_blank"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/bqyrmT1gY869b7dG7" target="_blank"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/QXBwm4RQZzNjiDiBA" target="_blank"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/xCdeNyXsT3Bm9JGn7" target="_blank"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/bAURBggPczXhhvE36" target="_blank"><img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/U8KGGuaL2F7zXNyV8" target="_blank"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/ijEURJixufirWhV97" target="_blank"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/b3stvydNBZC3N1QW8" target="_blank"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/jbczDNjdv7cAg3nf7" target="_blank"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/sNK54BG9R9uXvwyo6" target="_blank"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/5EvQa9hPKCw3WkPs7" target="_blank"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/Y7tNMWC1iMv6M5wz9" target="_blank"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/r8gypFCpWtJMZqDY9" target="_blank"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/1apbrH65LzNv5QuC6" target="_blank"><img src="https://images.unsplash.com/photo-1522748955767-123479b47e17?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/y1FoZacz1iBrgA4M8" target="_blank"><img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/UF6yKwmFQDaG14x79" target="_blank"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/JtXTHG7F7RR7wa3q6" target="_blank"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/qLR4B8UCpZEV4VY29" target="_blank"><img src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/qbLGgJnZ8ARkUfUR8" target="_blank"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/gi1chBvo3KJhMPnS6" target="_blank"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/R66Tcdoe5i6QjnCG7" target="_blank"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/GRTe53Lyt1t2nF7n7" target="_blank"><img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/Ldj3Cruu7xwvcECi6" target="_blank"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/664gn7HVVoDJSdTk6" target="_blank"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/JbzaUfwoTaaRZyi68" target="_blank"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" alt="Recuerdo"></a>
+                    <a href="https://photos.app.goo.gl/39Ws5WiH5fiCFu1B9" target="_blank"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400" alt="Recuerdo"></a>
+                </div>
+                <p style="font-size: 0.8rem; text-align: center; margin-top: 8px; color: #777;">Toca cualquier imagen para verla en Google Fotos</p>
+            </div>
+
+            <!-- Sección de Razones -->
+            <div class="section-card">
+                <h2>✨ 76 Razones por las que te amo</h2>
+                <div class="reason-box">1. Por lo dulce que es cuando me regala una sonrisa.</div>
+                <div class="reason-box">2. Por su sinceridad, porque sé que siempre me habla con la verdad.</div>
+                <div class="reason-box">3. Por lo dedicada que es en todo lo que se propone.</div>
+                <div class="reason-box">4. Por ese carácter fuerte que la hace única, aunque a veces sea un poquito gruñona.</div>
+                <div class="reason-box">5. Por cómo se enoja de forma tierna cuando algo no le sale como quiere (enojona).</div>
+                <div class="reason-box">6. Por lo tierna que puede llegar a ser de la nada.</div>
+                <div class="reason-box">7. Por su gran sensibilidad ante las cosas que le importan.</div>
+                <div class="reason-box">8. Por el amor tan puro y el respeto tan grande que le tiene a los perros.</div>
+                <div class="reason-box">9. Por la empatía y el dolor genuino que siente ante cualquier caso de maltrato animal.</div>
+                <div class="reason-box">10. Por lo mucho que le encantan los gatos y cómo los consiente.</div>
+                <div class="reason-box">11. Por lo linda que es en absolutamente todo lo que hace respecto a mí.</div>
+                <div class="reason-box">12. Por lo atenta que es con los pequeños y grandes detalles.</div>
+                <div class="reason-box">13. Por lo bien que me conoce.</div>
+                <div class="reason-box">14. Por cómo equilibra su fuerza con su enorme sensibilidad.</div>
+                <div class="reason-box">15. Por la pasión que le pone a las cosas que le apasionan.</div>
+                <div class="reason-box">16. Por cómo se ve cuando está concentrada haciendo algo.</div>
+                <div class="reason-box">17. Por lo noble de su corazón, incluso cuando intenta ponerse brava.</div>
+                <div class="reason-box">18. Por cómo defiende lo que cree con tanta convicción.</div>
+                <div class="reason-box">19. Por su bondad infinita hacia los animales y los seres indefensos.</div>
+                <div class="reason-box">20. Por la ternura con la que trata a sus mascotas.</div>
+                <div class="reason-box">21. Por cómo se ilumina su cara cuando ve a un perrito o un gatito en la calle.</div>
+                <div class="reason-box">22. Por lo genuina que es su risa cuando realmente la hago reír.</div>
+                <div class="reason-box">23. Por la paz que me transmite su presencia a pesar de su carácter fuerte.</div>
+                <div class="reason-box">24. Por ser exactamente como es, sin intentar cambiar para encajar en ningún lado.</div>
+                <div class="reason-box">25. Por cómo cuida de mí cuando más lo necesito.</div>
+                <div class="reason-box">26. Por las atenciones diarias que demuestran cuánto le importo.</div>
+                <div class="reason-box">27. Por el hecho de que me conoce tan bien que sabe cuando algo me pasa con solo verme.</div>
+                <div class="reason-box">28. Por cómo se preocupa por mi bienestar y mi felicidad.</div>
+                <div class="reason-box">29. Por los mensajes inesperados que alegran cualquiera de mis días.</div>
+                <div class="reason-box">30. Por cómo celebra mis logros como si fueran suyos.</div>
+                <div class="reason-box">31. Por la paciencia que me tiene en mis días difíciles.</div>
+                <div class="reason-box">32. Por cómo ha estado a mi lado durante todo este tiempo juntos.</div>
+                <div class="reason-box">33. Por la confianza que hemos construido paso a paso.</div>
+                <div class="reason-box">34. Por ser mi refugio seguro después de un día pesado.</div>
+                <div class="reason-box">35. Por cómo me escucha sin juzgarme.</div>
+                <div class="reason-box">36. Por los abrazos que tienen el poder de arreglar cualquier mal momento.</div>
+                <div class="reason-box">37. Por la forma en que me mira cuando cree que no me doy cuenta.</div>
+                <div class="reason-box">38. Por cómo me incluye en sus planes y en su vida.</div>
+                <div class="reason-box">39. Por ser mi cómplice en cada ocurrencia y aventura.</div>
+                <div class="reason-box">40. Por la lealtad inquebrantable que me demuestra todos los días.</div>
+                <div class="reason-box">41. Por cómo respeta mi espacio y apoya mis metas.</div>
+                <div class="reason-box">42. Por los recuerdos tan bonitos que hemos creado juntos a lo largo de estos más de 6 años.</div>
+                <div class="reason-box">43. Por la forma en que se esfuerza para que nuestra relación funcione y crezca.</div>
+                <div class="reason-box">44. Por cómo convierte un día ordinario en algo especial con solo estar ahí.</div>
+                <div class="reason-box">45. Por el cariño tan sincero que me transmite con un simple toque.</div>
+                <div class="reason-box">46. Por cómo me defiende y me apoya ante el mundo.</div>
+                <div class="reason-box">47. Por las pláticas largas donde podemos hablar de todo y de nada.</div>
+                <div class="reason-box">48. Por la seguridad que siento al saber que nos tenemos el uno al otro.</div>
+                <div class="reason-box">49. Por ser, simplemente, mi persona favorita en el mundo.</div>
+                <div class="reason-box">50. Por su carita de "enojada" que en realidad me da risa de lo tierna que se ve.</div>
+                <div class="reason-box">51. Por cómo arruga la nariz cuando algo no le parece o se concentra.</div>
+                <div class="reason-box">52. Por la forma en que cuida cada detalle de las cosas que hace por mí.</div>
+                <div class="reason-box">53. Por sus pucheros cuando quiere conseguir algo o se hace la difícil.</div>
+                <div class="reason-box">54. Por la manera en que se acurruca conmigo cuando tenemos tiempo para descansar.</div>
+                <div class="reason-box">55. Por cómo reacciona cuando ve videos de perritos rescatados o gatitos tiernos.</div>
+                <div class="reason-box">56. Por sus manitas y cómo se siente tomarlas entre las mías.</div>
+                <div class="reason-box">57. Por los apodos y bromas internas que solo nosotros entendemos.</div>
+                <div class="reason-box">58. Por cómo se emociona cuando algo le sale bien o le gusta mucho.</div>
+                <div class="reason-box">59. Por su forma de caminar y sus gestos tan característicos.</div>
+                <div class="reason-box">60. Por cómo se ve por las mañanas recién despierta.</div>
+                <div class="reason-box">61. Por el empeño que pone cuando quiere darme una sorpresa o un detalle.</div>
+                <div class="reason-box">62. Por cómo se pone cuando le coqueteo o le digo cosas bonitas.</div>
+                <div class="reason-box">63. Por la paciencia con la que tolera mis propias manías.</div>
+                <div class="reason-box">64. Por cómo comparte conmigo lo que le gusta y lo que le disgusta.</div>
+                <div class="reason-box">65. Por los suspiros que suelta cuando está cansada pero contenta.</div>
+                <div class="reason-box">66. Por la forma en que se acomoda en el carro o en el sillón a mi lado.</div>
+                <div class="reason-box">67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.</div>
+                <div class="reason-box">68. Por su risa contagiosa que se escucha desde el fondo de su alma.</div>
+                <div class="reason-box">69. Por cómo cuida de sus cosas y de su entorno con esmero.</div>
+                <div class="reason-box">70. Por la ternura con la que me regaña cuando hago alguna tontería.</div>
+                <div class="reason-box">71. Por cómo se despide de mí y cómo me recibe después de vernos.</div>
+                <div class="reason-box">72. Por los silencios compartidos que nunca se sienten incómodos con ella.</div>
+                <div class="reason-box">73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.</div>
+                <div class="reason-box">74. Por la mujer tan chingona y admirable en la que se ha convertido.</div>
+                <div class="reason-box">75. Por cómo enfrenta los retos de la vida sin cobardía.</div>
+                <div class="reason-box">76. Por los valores tan firmes que rigen su vida y sus acciones, y por ser mi todo.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Cuenta Regresiva -->
+    <script>
+        // Fecha exacta: 9 de noviembre de 2026 a las 11:11 AM
+        const targetDate = new Date("November 9, 2026 11:11:00").getTime();
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                clearInterval(timer);
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "flex";
+            } else {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days).padStart(2, '0');
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
