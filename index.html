@@ -109,6 +109,35 @@
             letter-spacing: 1px;
         }
 
+        /* Pantalla de Viaje Intergaláctico (Warp Speed) */
+        #warp-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9990;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #warp-screen h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #ff758f;
+            z-index: 9991;
+            text-shadow: 0 0 20px rgba(255, 77, 109, 0.8);
+            animation: fadeInWarp 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes fadeInWarp {
+            from { opacity: 0.4; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1.05); }
+        }
+
         /* Contenedor Principal */
         #main-content {
             display: none;
@@ -117,7 +146,7 @@
             min-height: 100vh;
         }
 
-        /* Vista de Galaxia con Fotos Orbitando y Agujero Negro */
+        /* Vista del Agujero Negro, Corazón y Planetas/Fotos */
         #galaxy-container {
             position: relative;
             width: 100%;
@@ -152,34 +181,6 @@
             font-size: 3.2rem;
             color: #ff758f;
             text-shadow: 0 0 15px rgba(255, 77, 109, 0.8);
-        }
-
-        /* Botón central sobre el corazón y agujero negro */
-        .heart-center-btn {
-            position: absolute;
-            z-index: 4;
-            background: linear-gradient(135deg, #c9184a, #ff4d6d);
-            border: 2px solid #ff758f;
-            color: white;
-            padding: 12px 26px;
-            border-radius: 30px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(255, 77, 109, 0.9);
-            animation: pulseHeart 2s infinite;
-            text-align: center;
-        }
-
-        .heart-center-btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 40px rgba(255, 77, 109, 1);
-        }
-
-        @keyframes pulseHeart {
-            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); }
-            50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(255, 77, 109, 1); }
-            100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); }
         }
 
         /* Reproductor de Música Flotante */
@@ -219,7 +220,7 @@
             text-overflow: ellipsis;
         }
 
-        /* Vista de Contenido Principal (Al dar click en el corazón) */
+        /* Vista de Contenido Principal */
         #content-page {
             display: none;
             background: #140308;
@@ -488,6 +489,12 @@
         <p style="font-size: 0.9rem; opacity: 0.9;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
     </div>
 
+    <!-- Pantalla de Viaje Intergaláctico (Warp Speed) -->
+    <div id="warp-screen">
+        <canvas id="warpCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990;"></canvas>
+        <h2 style="position: relative; z-index: 9992;">Viajando al universo de nuestro amor... ✨</h2>
+    </div>
+
     <!-- Modal de Pantalla Completa para Fotos -->
     <div id="fullscreen-modal" onclick="closeFullscreen()">
         <button class="close-fullscreen" onclick="closeFullscreen()">×</button>
@@ -497,16 +504,13 @@
     <!-- Contenedor Principal -->
     <div id="main-content">
         
-        <!-- 1. VISTA DE INICIO: Agujero Negro, Corazón y FOTOS en Órbita -->
+        <!-- 1. VISTA DE INICIO: Agujero Negro con Corazón 3D lleno de partículas (Texto interactivo dentro) -->
         <div id="galaxy-container">
             <div class="galaxy-header">
                 <h1>Para ti ❤️</h1>
             </div>
 
             <canvas id="galaxyCanvas"></canvas>
-
-            <!-- Botón en el centro sobre el corazón y agujero negro -->
-            <button class="heart-center-btn" onclick="goToContentPage()">Da click aquí ❤️</button>
 
             <!-- Reproductor de Música -->
             <div class="music-float">
@@ -517,7 +521,7 @@
             </div>
         </div>
 
-        <!-- 2. VISTA DE CONTENIDO (Se abre al dar click en el corazón) -->
+        <!-- 2. VISTA DE CONTENIDO -->
         <div id="content-page">
             <button class="back-galaxy-btn" onclick="goToGalaxy()">⬅ Volver al Universo</button>
 
@@ -694,6 +698,62 @@ Te Lobo 🐺 ♥️
             document.getElementById('phrase-display').innerText = lovePhrases[randomIndex];
         }
 
+        // Animación de Viaje Intergaláctico (Warp Speed)
+        function startWarpSpeed(onComplete) {
+            const warpScreen = document.getElementById('warp-screen');
+            const warpCanvas = document.getElementById('warpCanvas');
+            const warpCtx = warpCanvas.getContext('2d');
+            warpScreen.style.display = 'flex';
+
+            warpCanvas.width = window.innerWidth;
+            warpCanvas.height = window.innerHeight;
+
+            let stars = [];
+            for (let i = 0; i < 300; i++) {
+                stars.push({
+                    x: (Math.random() - 0.5) * warpCanvas.width * 2,
+                    y: (Math.random() - 0.5) * warpCanvas.height * 2,
+                    z: Math.random() * warpCanvas.width
+                });
+            }
+
+            let warpRunning = true;
+            function renderWarp() {
+                if (!warpRunning) return;
+                warpCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                warpCtx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
+
+                let cx = warpCanvas.width / 2;
+                let cy = warpCanvas.height / 2;
+
+                stars.forEach(s => {
+                    s.z -= 25;
+                    if (s.z <= 0) s.z = warpCanvas.width;
+
+                    let k = 300 / s.z;
+                    let px = s.x * k + cx;
+                    let py = s.y * k + cy;
+
+                    if (px >= 0 && px <= warpCanvas.width && py >= 0 && py <= warpCanvas.height) {
+                        let size = Math.max(1, (1 - s.z / warpCanvas.width) * 4);
+                        warpCtx.fillStyle = '#ff758f';
+                        warpCtx.beginPath();
+                        warpCtx.arc(px, py, size, 0, Math.PI * 2);
+                        warpCtx.fill();
+                    }
+                });
+                requestAnimationFrame(renderWarp);
+            }
+            renderWarp();
+
+            setTimeout(() => {
+                warpRunning = false;
+                warpScreen.style.display = 'none';
+                if (onComplete) onComplete();
+            }, 3500);
+        }
+
+        // Configuración de la Galaxia 3D Principal
         const canvas = document.getElementById('galaxyCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -716,9 +776,10 @@ Te Lobo 🐺 ♥️
             particles = [];
             orbitingPhotos = [];
 
-            for (let i = 0; i < 200; i++) {
+            // 1. Agujero Negro Central de fondo
+            for (let i = 0; i < 280; i++) {
                 let angle = Math.random() * Math.PI * 2;
-                let r = 20 + Math.random() * 50;
+                let r = 25 + Math.random() * 65;
                 particles.push({
                     x: Math.cos(angle) * r,
                     y: Math.sin(angle) * r,
@@ -728,23 +789,25 @@ Te Lobo 🐺 ♥️
                 });
             }
 
-            for (let i = 0; i < 400; i++) {
+            // 2. Corazón 3D completo y denso lleno de partículas ubicado exactamente sobre el agujero negro
+            for (let i = 0; i < 900; i++) {
                 let t = Math.random() * Math.PI * 2;
                 let x = 16 * Math.pow(Math.sin(t), 3);
                 let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
                 particles.push({
-                    x: x * 5.5,
-                    y: y * 5.5,
-                    z: (Math.random() - 0.5) * 30,
+                    x: x * 6.5,
+                    y: y * 6.5,
+                    z: (Math.random() - 0.5) * 35,
                     isHeart: true,
-                    color: '#ff4d6d'
+                    color: i % 3 === 0 ? '#ffffff' : (i % 2 === 0 ? '#ff4d6d' : '#ff758f')
                 });
             }
 
+            // 3. FOTOS orbitando como planetas / estrellas estelares
             photoFiles.forEach((photo, index) => {
                 let theta = (index / photoFiles.length) * 2 * Math.PI;
                 let phi = Math.acos((Math.random() * 2) - 1);
-                let radius = 230 + Math.random() * 120;
+                let radius = 250 + Math.random() * 140;
 
                 let imgObj = new Image();
                 imgObj.src = encodeURI(photo);
@@ -755,7 +818,7 @@ Te Lobo 🐺 ♥️
                     z: radius * Math.cos(phi),
                     img: imgObj,
                     src: photo,
-                    size: 45
+                    size: 55
                 });
             });
         }
@@ -769,14 +832,16 @@ Te Lobo 🐺 ♥️
                 angleY += 0.0025;
             }
 
+            // Dibujar el centro oscuro del Agujero Negro
             ctx.fillStyle = "#000000";
             ctx.beginPath();
-            ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+            ctx.arc(cx, cy, 40, 0, Math.PI * 2);
             ctx.fill();
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             ctx.strokeStyle = "#ff4d6d";
             ctx.stroke();
 
+            // Renderizar partículas y el corazón completo en 3D
             particles.forEach(p => {
                 let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
                 let x1 = p.x * cosY - p.z * sinY;
@@ -794,11 +859,12 @@ Te Lobo 🐺 ♥️
                 if (scale > 0) {
                     ctx.fillStyle = p.color;
                     ctx.beginPath();
-                    ctx.arc(x2proj, y2proj, (p.isHeart ? 2 : 1.5) * scale, 0, Math.PI * 2);
+                    ctx.arc(x2proj, y2proj, (p.isHeart ? 2.5 : 1.5) * scale, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
 
+            // Renderizar Fotos Orbitando con efecto estelar
             orbitingPhotos.forEach(p => {
                 let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
                 let x1 = p.x * cosY - p.z * sinY;
@@ -815,7 +881,11 @@ Te Lobo 🐺 ♥️
 
                 if (scale > 0) {
                     let currentSize = p.size * scale;
+                    
                     ctx.save();
+                    ctx.shadowColor = '#ff758f';
+                    ctx.shadowBlur = 12 * scale;
+
                     ctx.beginPath();
                     ctx.arc(x2proj, y2proj, currentSize / 2, 0, Math.PI * 2);
                     ctx.closePath();
@@ -826,7 +896,7 @@ Te Lobo 🐺 ♥️
                     }
                     ctx.restore();
 
-                    ctx.lineWidth = 2 * scale;
+                    ctx.lineWidth = 2.5 * scale;
                     ctx.strokeStyle = "#ff758f";
                     ctx.beginPath();
                     ctx.arc(x2proj, y2proj, currentSize / 2, 0, Math.PI * 2);
@@ -834,17 +904,38 @@ Te Lobo 🐺 ♥️
                 }
             });
 
+            // Dibujar el texto "Da click aquí ❤️" integrado directamente en el centro del corazón
+            ctx.save();
+            ctx.font = '600 16px Poppins, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#ff4d6d';
+            ctx.shadowBlur = 10;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText("Da click aquí ❤️", cx, cy);
+            ctx.restore();
+
             requestAnimationFrame(animateGalaxy);
         }
 
-        canvas.addEventListener('click', e => {
+        // Manejo de interacciones (clics en fotos o en el corazón central)
+        function handleCanvasInteraction(clientX, clientY) {
             const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
+            const clickX = clientX - rect.left;
+            const clickY = clientY - rect.top;
             let cx = canvas.width / 2;
             let cy = canvas.height / 2;
 
-            orbitingPhotos.forEach(p => {
+            // Verificar si hizo clic en el centro (corazón / texto "Da click aquí")
+            let distCenter = Math.hypot(clickX - cx, clickY - cy);
+            if (distCenter < 60) {
+                goToContentPage();
+                return;
+            }
+
+            // Verificar si hizo clic en alguna foto orbitante
+            let sortedPhotos = [...orbitingPhotos].sort((a, b) => b.z - a.z);
+            for (let p of sortedPhotos) {
                 let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
                 let x1 = p.x * cosY - p.z * sinY;
                 let z1 = p.z * cosY + p.x * sinY;
@@ -861,10 +952,23 @@ Te Lobo 🐺 ♥️
                 let dist = Math.hypot(clickX - x2proj, clickY - y2proj);
                 if (dist < currentSize / 2) {
                     openFullscreen(p.src);
+                    return;
                 }
-            });
+            }
+        }
+
+        canvas.addEventListener('click', e => {
+            handleCanvasInteraction(e.clientX, e.clientY);
         });
 
+        canvas.addEventListener('touchend', e => {
+            if (e.changedTouches.length > 0) {
+                let touch = e.changedTouches[0];
+                handleCanvasInteraction(touch.clientX, touch.clientY);
+            }
+        });
+
+        // Controles de rotación 3D
         canvas.addEventListener('mousedown', e => {
             isDragging = true;
             lastMouseX = e.clientX;
@@ -909,6 +1013,7 @@ Te Lobo 🐺 ♥️
             letter.style.display = letter.style.display === 'block' ? 'none' : 'block';
         }
 
+        // Reproductor de Música Automático
         const playlist = [
             { src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"), title: "What Took You So Long" },
             { src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"), title: "Follow You" },
@@ -996,12 +1101,16 @@ Te Lobo 🐺 ♥️
 
             if (difference <= 0) {
                 document.getElementById("lock-screen").style.display = "none";
-                document.getElementById("main-content").style.display = "flex";
-                initGalaxy();
-                animateGalaxy();
-                updateLoveSeconds();
-                playAudioAutomatically();
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                
+                startWarpSpeed(() => {
+                    document.getElementById("main-content").style.display = "flex";
+                    initGalaxy();
+                    animateGalaxy();
+                    updateLoveSeconds();
+                    playAudioAutomatically();
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                });
+
             } else {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1019,12 +1128,16 @@ Te Lobo 🐺 ♥️
             const pass = prompt("Contraseña de administrador:");
             if (pass === "Milybeb3*") {
                 document.getElementById("lock-screen").style.display = "none";
-                document.getElementById("main-content").style.display = "flex";
-                initGalaxy();
-                animateGalaxy();
-                updateLoveSeconds();
-                playAudioAutomatically();
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                
+                startWarpSpeed(() => {
+                    document.getElementById("main-content").style.display = "flex";
+                    initGalaxy();
+                    animateGalaxy();
+                    updateLoveSeconds();
+                    playAudioAutomatically();
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                });
+
             } else if (pass !== null) {
                 alert("Contraseña incorrecta.");
             }
