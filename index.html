@@ -109,7 +109,7 @@
             letter-spacing: 1px;
         }
 
-        /* Contenido Principal (Galaxia 3D y sección inferior) */
+        /* Contenedor Principal (Inicia con la Galaxia 3D) */
         #main-content {
             display: none;
             flex-direction: column;
@@ -117,7 +117,7 @@
             min-height: 100vh;
         }
 
-        /* Contenedor de la Galaxia 3D */
+        /* Vista de Galaxia 3D (Inicio) */
         #galaxy-container {
             position: relative;
             width: 100%;
@@ -141,7 +141,7 @@
 
         .galaxy-header {
             position: absolute;
-            top: 20px;
+            top: 30px;
             z-index: 3;
             text-align: center;
             pointer-events: none;
@@ -149,37 +149,37 @@
 
         .galaxy-header h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #ff758f;
             text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
         }
 
-        /* Botón central en el corazón (Da click aquí) */
+        /* Corazón Central Interactivo (Da click aquí) */
         .heart-center-btn {
             position: absolute;
             z-index: 4;
             background: rgba(201, 24, 74, 0.85);
             border: 2px solid #ff758f;
             color: white;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 30px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.8);
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.9);
             animation: pulseHeart 2s infinite;
             text-align: center;
         }
 
         .heart-center-btn:hover {
             background: #ff4d6d;
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
         @keyframes pulseHeart {
-            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
-            50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(255, 77, 109, 1); }
-            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 77, 109, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); }
         }
 
         /* Reproductor de Música Flotante */
@@ -213,25 +213,38 @@
 
         #music-status {
             font-size: 0.8rem;
-            max-width: 200px;
+            max-width: 180px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Sección de contenido inferior (Carta, Galería horizontal, Cupones) */
-        .content-sections {
+        /* Sección de contenido inferior (Se muestra al dar click en el corazón) */
+        #content-page {
+            display: none;
             background: #140308;
-            padding: 30px 20px;
-            display: flex;
+            padding: 40px 20px;
             flex-direction: column;
             gap: 30px;
             max-width: 1000px;
             margin: 0 auto;
             width: 100%;
+            min-height: 100vh;
         }
 
-        /* Modal / Carta de amor */
+        .back-galaxy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            align-self: flex-start;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        /* Carta de Amor */
         .letter-container {
             background: linear-gradient(135deg, #2a0812, #1a0208);
             border: 1px solid var(--secondary);
@@ -261,7 +274,7 @@
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
         }
 
-        /* Galería de Recuerdos Horizontal (Scroll a la derecha) */
+        /* Galería de Recuerdos Horizontal */
         .gallery-section {
             background: #1a040b;
             border-radius: 20px;
@@ -311,7 +324,7 @@
             object-fit: contain;
         }
 
-        /* Sección de Cupones */
+        /* Cupones */
         .coupon-section {
             background: #1a040b;
             border-radius: 20px;
@@ -393,31 +406,33 @@
         <p style="font-size: 0.9rem; opacity: 0.9;">Falta poquito para celebrar tu vida, mi amor. 🐺♥️</p>
     </div>
 
-    <!-- Contenido Principal -->
+    <!-- Contenedor Principal -->
     <div id="main-content">
-        <!-- Galaxia 3D con Frases y Corazón Central -->
+        
+        <!-- 1. VISTA DE INICIO: Galaxia 3D con el Corazón -->
         <div id="galaxy-container">
             <div class="galaxy-header">
-                <h1>Universo de Amor para Ti</h1>
+                <h1>Para ti ❤️</h1>
             </div>
 
-            <!-- Canvas para la animación 3D de la galaxia y el corazón -->
             <canvas id="galaxyCanvas"></canvas>
 
-            <!-- Botón central en el corazón -->
-            <button class="heart-center-btn" onclick="scrollToContent()">Da click aquí ❤️</button>
+            <!-- Botón en el corazón -->
+            <button class="heart-center-btn" onclick="goToContentPage()">Da click aquí ❤️</button>
 
             <!-- Reproductor de Música -->
             <div class="music-float">
                 <button onclick="prevSong()" title="Anterior">⏮</button>
-                <button id="play-music-btn" onclick="toggleMusic()" title="Play/Pausa">▶</button>
+                <button id="play-music-btn" onclick="toggleMusic()" title="Play/Pausa">⏸</button>
                 <button onclick="nextSong()" title="Siguiente">⏭</button>
-                <span id="music-status">Música</span>
+                <span id="music-status">Reproduciendo...</span>
             </div>
         </div>
 
-        <!-- Secciones Inferiores (Carta, Galería, Cupones, Segundos) -->
-        <div class="content-sections" id="bottom-content">
+        <!-- 2. VISTA DE CONTENIDO (Se abre al dar click en el corazón) -->
+        <div id="content-page">
+            <button class="back-galaxy-btn" onclick="goToGalaxy()">⬅ Volver a la Galaxia</button>
+
             <!-- Carta de Amor -->
             <div class="letter-container">
                 <h3 style="font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--secondary);">Carta para ti, mi amor</h3>
@@ -510,7 +525,6 @@ Te Lobo 🐺 ♥️
 
     <!-- Scripts de la Galaxia 3D y Funcionalidades -->
     <script>
-        // Lista de las 75 frases de amor
         const lovePhrases = [
             "1. Por lo dulce que es cuando me regala una sonrisa.",
             "2. Por su sinceridad, porque sé que siempre me habla con la verdad.",
@@ -581,7 +595,7 @@ Te Lobo 🐺 ♥️
             "67. Por cómo le brillan los ojos cuando habla de algo que le entusiasma.",
             "68. Por su risa contagiosa que se escucha desde el fondo de su alma.",
             "69. Por cómo cuida de sus cosas y de su entorno con esmero.",
-            "70. Por la ternura con la que me regaña cuando hago alguna tontería.",
+            "70. Por la ternura con la que regaña cuando hago alguna tontería.",
             "71. Por cómo se despide de mí y cómo me recibe después de vernos.",
             "72. Por los silencios compartidos que nunca se sienten incómodos con ella.",
             "73. Por cada pequeño gesto cotidiano que demuestra el amor que le tengo.",
@@ -589,7 +603,6 @@ Te Lobo 🐺 ♥️
             "75. Por cómo enfrenta los retos de la vida sin cobardía y por ser mi todo."
         ];
 
-        // Configuración de la Galaxia 3D en Canvas
         const canvas = document.getElementById('galaxyCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -607,10 +620,8 @@ Te Lobo 🐺 ♥️
         let lastMouseX = 0;
         let lastMouseY = 0;
 
-        // Crear partículas (Corazón central + Frases flotantes en 3D)
         function initGalaxy() {
             particles = [];
-            // Generar partículas para el corazón central
             for (let i = 0; i < 300; i++) {
                 let t = Math.random() * Math.PI * 2;
                 let x = 16 * Math.pow(Math.sin(t), 3);
@@ -625,8 +636,7 @@ Te Lobo 🐺 ♥️
                 });
             }
 
-            // Generar partículas para las 75 frases distribuidas en esfera 3D
-            lovePhrases.forEach((phrase, index) => {
+            lovePhrases.forEach((phrase) => {
                 let theta = Math.random() * 2 * Math.PI;
                 let phi = Math.acos((Math.random() * 2) - 1);
                 let radius = 180 + Math.random() * 120;
@@ -642,19 +652,17 @@ Te Lobo 🐺 ♥️
             });
         }
 
-        // Renderizado 3D de la galaxia
+        let animationFrameId;
         function animateGalaxy() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             let cx = canvas.width / 2;
             let cy = canvas.height / 2;
 
-            // Rotación automática suave
             if (!isDragging) {
                 angleY += 0.003;
             }
 
             particles.forEach(p => {
-                // Rotación en 3D (Ejes Y e X)
                 let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
                 let x1 = p.x * cosY - p.z * sinY;
                 let z1 = p.z * cosY + p.x * sinY;
@@ -663,7 +671,6 @@ Te Lobo 🐺 ♥️
                 let y2 = p.y * cosX - z1 * sinX;
                 let z2 = z1 * cosX + p.y * sinX;
 
-                // Perspectiva 3D
                 let fov = 400;
                 let scale = fov / (fov + z2 + 300);
                 let x2proj = cx + x1 * scale;
@@ -683,26 +690,21 @@ Te Lobo 🐺 ♥️
                 }
             });
 
-            requestAnimationFrame(animateGalaxy);
+            animationFrameId = requestAnimationFrame(animateGalaxy);
         }
 
-        // Controles táctiles / mouse para girar la galaxia
         canvas.addEventListener('mousedown', e => {
             isDragging = true;
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
         });
-
         window.addEventListener('mousemove', e => {
             if (!isDragging) return;
-            let deltaX = e.clientX - lastMouseX;
-            let deltaY = e.clientY - lastMouseY;
-            angleY += deltaX * 0.005;
-            angleX -= deltaY * 0.005;
+            angleY += (e.clientX - lastMouseX) * 0.005;
+            angleX -= (e.clientY - lastMouseY) * 0.005;
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
         });
-
         window.addEventListener('mouseup', () => { isDragging = false; });
 
         canvas.addEventListener('touchstart', e => {
@@ -710,31 +712,34 @@ Te Lobo 🐺 ♥️
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
         });
-
         window.addEventListener('touchmove', e => {
             if (!isDragging) return;
-            let deltaX = e.touches[0].clientX - lastMouseX;
-            let deltaY = e.touches[0].clientY - lastMouseY;
-            angleY += deltaX * 0.005;
-            angleX -= deltaY * 0.005;
+            angleY += (e.touches[0].clientX - lastMouseX) * 0.005;
+            angleX -= (e.touches[0].clientY - lastMouseY) * 0.005;
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
         });
-
         window.addEventListener('touchend', () => { isDragging = false; });
 
-        // Desplazarse al contenido inferior al hacer clic en el corazón
-        function scrollToContent() {
-            document.getElementById('bottom-content').scrollIntoView({ behavior: 'smooth' });
+        // Navegación entre vistas
+        function goToContentPage() {
+            document.getElementById('galaxy-container').style.display = 'none';
+            document.getElementById('content-page').style.display = 'flex';
+            window.scrollTo(0, 0);
         }
 
-        // Abrir/Cerrar Carta
+        function goToGalaxy() {
+            document.getElementById('content-page').style.display = 'none';
+            document.getElementById('galaxy-container').style.display = 'flex';
+        }
+
+        // Carta de Amor
         function toggleLetter() {
             const letter = document.getElementById('letter-text');
             letter.style.display = letter.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Reproductor de Música Playlist
+        // Reproductor de Música con Autoplay automático
         const playlist = [
             { src: encodeURI("Armin van Buuren & Gryffin - What Took You So Long [VISUALIZER].mp3"), title: "What Took You So Long" },
             { src: encodeURI("Follow You - Bring Me The Horizon (Lyrics) (Sub Español-Inglés).mp3"), title: "Follow You" },
@@ -744,6 +749,7 @@ Te Lobo 🐺 ♥️
         let currentSongIndex = 0;
         const audioPlayer = new Audio();
         audioPlayer.preload = "auto";
+        audioPlayer.loop = false;
 
         audioPlayer.addEventListener('ended', () => { nextSong(); });
 
@@ -755,8 +761,24 @@ Te Lobo 🐺 ♥️
         }
 
         let isPlaying = false;
+        function playAudioAutomatically() {
+            loadSong(0);
+            audioPlayer.play().then(() => {
+                isPlaying = true;
+                document.getElementById("play-music-btn").innerText = "⏸";
+            }).catch(e => {
+                console.log("Autoplay bloqueado por navegador, esperando interacción:", e);
+                // Si el navegador bloquea el autoplay, se reproducirá al primer toque en la pantalla
+                document.addEventListener('click', function unlockAudio() {
+                    audioPlayer.play();
+                    isPlaying = true;
+                    document.getElementById("play-music-btn").innerText = "⏸";
+                    document.removeEventListener('click', unlockAudio);
+                }, { once: true });
+            });
+        }
+
         function toggleMusic() {
-            if (!audioPlayer.src) loadSong(currentSongIndex);
             const btn = document.getElementById("play-music-btn");
             if (isPlaying) {
                 audioPlayer.pause();
@@ -766,23 +788,25 @@ Te Lobo 🐺 ♥️
                 audioPlayer.play().then(() => {
                     btn.innerText = "⏸";
                     isPlaying = true;
-                }).catch(e => alert("Toca de nuevo para reproducir."));
+                });
             }
         }
 
         function nextSong() {
             currentSongIndex = (currentSongIndex + 1) % playlist.length;
             loadSong(currentSongIndex);
-            if (isPlaying) audioPlayer.play();
+            audioPlayer.play();
+            isPlaying = true;
+            document.getElementById("play-music-btn").innerText = "⏸";
         }
 
         function prevSong() {
             currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
             loadSong(currentSongIndex);
-            if (isPlaying) audioPlayer.play();
+            audioPlayer.play();
+            isPlaying = true;
+            document.getElementById("play-music-btn").innerText = "⏸";
         }
-
-        loadSong(0);
 
         // Canjear cupones
         function claimCoupon(element, message) {
@@ -811,6 +835,7 @@ Te Lobo 🐺 ♥️
                 initGalaxy();
                 animateGalaxy();
                 updateLoveSeconds();
+                playAudioAutomatically(); // <--- Inicia la música automáticamente al desbloquearse
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             } else {
                 const days = Math.floor(difference / (1000 * 60 * 60 * 24));
@@ -833,6 +858,7 @@ Te Lobo 🐺 ♥️
                 initGalaxy();
                 animateGalaxy();
                 updateLoveSeconds();
+                playAudioAutomatically(); // <--- Inicia la música automáticamente por admin
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             } else if (pass !== null) {
                 alert("Contraseña incorrecta.");
