@@ -551,6 +551,11 @@
         .wish-msg { font-size: 1rem; line-height: 1.55; white-space: pre-line; }
         .wish-from { margin-top: 12px; font-family: 'Great Vibes', cursive; font-size: 1.7rem; color: var(--secondary); }
         .wish-from small { font-family: 'Poppins', sans-serif; font-size: .75rem; color: #b8f2e6; margin-left: 6px; }
+        .wish-song { margin-top: 14px; padding: 12px; border-radius: 14px; background: rgba(0,0,0,.35); border: 1px solid rgba(30,215,96,.35); }
+        .wish-song-title { font-size: .85rem; margin-bottom: 8px; color: #d6ffe6; }
+        .wish-song audio { width: 100%; height: 40px; }
+        .spotify-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 14px; border-radius: 999px; background: #1DB954; color: #04210f; font-weight: 600; font-size: .85rem; text-decoration: none; }
+        .spotify-btn svg { width: 22px; height: 22px; }
     </style>
 </head>
 <body>
@@ -1226,6 +1231,7 @@ Te Lobo 🐺 ♥️
             }).catch(e => {
                 console.log("Autoplay restringido, esperando toque:", e);
                 document.addEventListener('click', function unlockAudio() {
+                    if (wishAudioPlaying) return; // la canción de una felicitación tiene prioridad
                     audioPlayer.play();
                     isPlaying = true;
                     document.getElementById("play-music-btn").innerText = "⏸";
@@ -1363,9 +1369,36 @@ Nunca olvides que cuentas conmigo para lo que sea.
 Eres fuerte, valiente, inteligente, hermosa, capaz y muy resiliente ✨💕
 Con amor Shan ❤️` },
             { nombre: 'Moy', relacion: 'Primo', media: 'IMG-20261105-WA0007.jpg', tipo: 'foto', mensaje: `¡Feliz cumple prim! Espero que todo lo nuevo que está por venir sea muy bonito y alegre tu vida. Te mando un fuerte abrazo y sabes que te quiero mucho 🎂🎉` },
+            { nombre: 'Mely', relacion: 'Hermana mayor', media: 'IMG-20261105-WA0000.jpg', tipo: 'foto',
+              cancion: { titulo: 'Bruno Mars - Count on Me', src: 'Bruno Mars - Count on Me (Lyrics).mp3', spotify: 'https://open.spotify.com/track/7l1qvxWjxcKpB9PCtBuTbU' },
+              mensaje: `Mi Mimis.
+Gracias por ser esa persona que siempre está para mí en todo momento.
+No sabes lo afortunada y feliz que me siento al saber que mi mejor amiga es también mi hermana y compañera de vida. ❤️‍🩹🥹
+Te amo muchísimo mi hermosa Valiente. ✨
+Por más momentos juntas... 👯🏻‍♀️🙌🏼
+
+¡Felicidades pequeña! 🥳✨💕` },
             // { nombre: 'Ana', relacion: 'Amiga', mensaje: 'Feliz cumple, amiga hermosa 🎂', media: 'felicitacion-ana.mp4', tipo: 'video' },
             // { nombre: 'Papá', relacion: 'Familia', mensaje: 'Te quiero muchísimo.', media: 'felicitacion-papa.jpg', tipo: 'foto' },
         ];
+
+        // Mientras suena un video o canción de una felicitación, la música de fondo se pausa; al pausar o terminar, se reanuda
+        let wishAudioPlaying = false;
+        function pauseBackgroundWhilePlaying(el) {
+            let resume = false;
+            el.addEventListener('play', () => {
+                wishAudioPlaying = true;
+                resume = isPlaying;
+                if (isPlaying) toggleMusic();
+            });
+            const back = () => {
+                wishAudioPlaying = false;
+                if (resume && !isPlaying) toggleMusic();
+                resume = false;
+            };
+            el.addEventListener('pause', back);
+            el.addEventListener('ended', back);
+        }
 
         function renderWishes() {
             const grid = document.getElementById('wishes-grid');
@@ -1375,11 +1408,7 @@ Con amor Shan ❤️` },
                 if (w.media && w.tipo === 'video') {
                     const v = document.createElement('video');
                     v.src = encodeURI(w.media); v.controls = true; v.playsInline = true; v.preload = 'metadata';
-                    // Pausa la música de fondo mientras suena el video
-                    let resume = false;
-                    v.addEventListener('play', () => { resume = isPlaying; if (isPlaying) toggleMusic(); });
-                    const back = () => { if (resume && !isPlaying) toggleMusic(); resume = false; };
-                    v.addEventListener('pause', back); v.addEventListener('ended', back);
+                    pauseBackgroundWhilePlaying(v);
                     card.appendChild(v);
                 } else if (w.media) {
                     const im = document.createElement('img');
@@ -1391,7 +1420,21 @@ Con amor Shan ❤️` },
                 const msg = document.createElement('p'); msg.className = 'wish-msg'; msg.textContent = w.mensaje || '';
                 const from = document.createElement('div'); from.className = 'wish-from'; from.textContent = w.nombre;
                 if (w.relacion) { const sm = document.createElement('small'); sm.textContent = w.relacion; from.appendChild(sm); }
-                body.append(msg, from); card.appendChild(body);
+                body.append(msg, from);
+                if (w.cancion) {
+                    const box = document.createElement('div'); box.className = 'wish-song';
+                    const t = document.createElement('div'); t.className = 'wish-song-title'; t.textContent = '🎵 ' + w.cancion.titulo;
+                    const au = document.createElement('audio'); au.src = encodeURI(w.cancion.src); au.controls = true; au.preload = 'none';
+                    pauseBackgroundWhilePlaying(au);
+                    box.append(t, au);
+                    if (w.cancion.spotify) {
+                        const a = document.createElement('a'); a.className = 'spotify-btn'; a.href = w.cancion.spotify; a.target = '_blank'; a.rel = 'noopener';
+                        a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#04210f"/><path fill="#1DB954" d="M17.3 10.6c-3-1.8-8-2-10.9-1.1-.5.1-.9-.2-1.1-.6-.1-.5.2-.9.6-1.1 3.3-1 8.8-.8 12.2 1.3.4.2.5.8.3 1.2-.3.4-.8.5-1.1.3zm-.1 2.6c-.2.4-.7.5-1.1.3-2.500-1.500-6.300-2-9.200-1.100-.4.100-.9-.1-1-.5-.1-.4.1-.9.5-1 3.400-1 7.600-.5 10.500 1.300.4.2.5.7.3 1zm-1.200 2.500c-.2.3-.6.4-.9.2-2.200-1.400-5-1.700-8.300-.9-.3.1-.7-.1-.8-.4-.1-.3.1-.7.4-.8 3.600-.8 6.700-.5 9.200 1.100.3.200.4.600.4.800z"/></svg> Escuchar en Spotify';
+                        box.appendChild(a);
+                    }
+                    body.appendChild(box);
+                }
+                card.appendChild(body);
                 grid.appendChild(card);
                 favObserver.observe(card);
             });
