@@ -556,6 +556,10 @@
         .wish-song audio { width: 100%; height: 40px; }
         .spotify-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 8px 14px; border-radius: 999px; background: #1DB954; color: #04210f; font-weight: 600; font-size: .85rem; text-decoration: none; }
         .spotify-btn svg { width: 22px; height: 22px; }
+        .wish-stickers { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 22px 12px 8px; font-size: 3rem; background: radial-gradient(circle at 50% 0%, rgba(255,143,171,.25), transparent 70%); }
+        .wish-stickers span { display: inline-block; animation: bob 3.5s ease-in-out infinite; filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)); }
+        .wish-stickers span:nth-child(even) { animation-delay: -1.7s; }
+        .wish-audio { width: calc(100% - 36px); margin: 8px 18px 0; display: block; }
     </style>
 </head>
 <body>
@@ -1403,6 +1407,7 @@ Te ama tu tía Ivonne 💐🎂❤️` },
             { nombre: 'Tía Tony', relacion: 'Tía', media: 'IMG-20261106-WA0009.jpg', tipo: 'foto', mensaje: `Mi hermosa Mimis, muchas felicidades, espero que tengas un bello y feliz cumpleaños en compañía de tus seres queridos y amigos, que esta nueva vuelta al sol siga plagada de salud, amor, alegría, éxitos y bendiciones. Sabes que te amo mucho princesita, te mando muchos besos y abrazos, ¡y que éste y el otro, salud!!! 🎹🍿🍢🍫🍬🎤🍺🍻🍾🪇🧁🎂🥁🧉🥃🍷🍧🍰💃🏻🕺🏻🥳🍹🍸🎼🎧🍭` },
             { nombre: 'Coria', relacion: 'Amigo', media: 'VID-20261105-WA0047.mp4', tipo: 'video', mensaje: `Que la vida te sorprenda de la mejor manera este nuevo año de vida, que la salud te acompañe a cada segundo & que todo lo que consideres especial para ti nunca te falte 💕
 Feliz cumpleaños 🥳🤪 con muchooo cariño, Coria :3` },
+            { nombre: 'José', relacion: 'Amigo del trabajo', media: 'AUD-20261106-WA0025.opus', tipo: 'audio', stickers: ['🥳', '🎂', '🎉', '🎁', '🎈', '🥂', '💖'], mensaje: '🎧 José te dejó un mensaje de voz. ¡Dale play!' },
             // { nombre: 'Ana', relacion: 'Amiga', mensaje: 'Feliz cumple, amiga hermosa 🎂', media: 'felicitacion-ana.mp4', tipo: 'video' },
             // { nombre: 'Papá', relacion: 'Familia', mensaje: 'Te quiero muchísimo.', media: 'felicitacion-papa.jpg', tipo: 'foto' },
         ];
@@ -1430,7 +1435,17 @@ Feliz cumpleaños 🥳🤪 con muchooo cariño, Coria :3` },
             FELICITACIONES.forEach(w => {
                 const card = document.createElement('div');
                 card.className = 'wish-card';
-                if (w.media && w.tipo === 'video') {
+                if (w.stickers) {
+                    const st = document.createElement('div'); st.className = 'wish-stickers';
+                    w.stickers.forEach(e => { const sp = document.createElement('span'); sp.textContent = e; st.appendChild(sp); });
+                    card.appendChild(st);
+                }
+                if (w.media && w.tipo === 'audio') {
+                    const a = document.createElement('audio');
+                    a.className = 'wish-audio'; a.src = encodeURI(w.media); a.controls = true; a.preload = 'metadata';
+                    pauseBackgroundWhilePlaying(a);
+                    card.appendChild(a);
+                } else if (w.media && w.tipo === 'video') {
                     const v = document.createElement('video');
                     v.src = encodeURI(w.media); v.controls = true; v.playsInline = true; v.preload = 'metadata';
                     pauseBackgroundWhilePlaying(v);
