@@ -839,29 +839,44 @@ Te Lobo 🐺 ♥️
             "IMG_20220617_230050474.jpg", "IMG_20221001_184936281.jpg", "IMG_20221202_222700283.jpg", "IMG_20230114_091326300.jpg"
         ];
 
+        // Fotos nuevas: solo van en la galería y el visor (la galaxia conserva las originales para no saturar el celular)
+        const extraPhotos = [
+            "29c8e2d2-33e8-48b6-8b0c-fab8411f40d9.jpg", "DC05586A-EBE7-4639-929C-7CBC682CFA59.jpg", "FB_IMG_1604293381136.jpg",
+            "IMG-20210402-WA0030.jpg", "IMG-20220601-WA0015.jpg", "IMG-20220716-WA0084.jpg",
+            "IMG-20221205-WA0021.jpg", "IMG-20261104-WA0006.jpg", "IMG-20261104-WA0007.jpg",
+            "IMG-20261105-WA0004.jpg", "IMG-20261105-WA0005.jpg", "IMG-20261105-WA0006.jpg",
+            "IMG-20261105-WA0010.jpg", "IMG-20261105-WA0011.jpg", "IMG-20261105-WA0013.jpg",
+            "IMG-20261105-WA0014.jpg", "IMG-20261105-WA0015.jpg", "IMG-20261105-WA0016.jpg",
+            "IMG-20261105-WA0017.jpg", "IMG-20261105-WA0018.jpg", "IMG-20261105-WA0019.jpg",
+            "IMG-20261105-WA0020.jpg", "IMG-20261106-WA0028.jpg", "IMG-20261106-WA0029.jpg",
+            "IMG-20261106-WA0030.jpg", "IMG-20261106-WA0033.jpg", "IMG-20261106-WA0034.jpg",
+            "IMG-20261106-WA0035.jpg"
+        ];
+        const galleryFiles = [...photoFiles, ...extraPhotos];
+
         const galleryContainer = document.getElementById('horizontal-gallery');
-        photoFiles.forEach(photo => {
+        galleryFiles.forEach(photo => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
             card.onclick = () => openFullscreen(photo);
-            card.innerHTML = `<img src="${encodeURI(photo)}" alt="Recuerdo">`;
+            card.innerHTML = `<img src="${encodeURI(photo)}" alt="Recuerdo" loading="lazy">`;
             galleryContainer.appendChild(card);
         });
 
         let currentPhoto = 0;
         function openFullscreen(src) {
-            currentPhoto = Math.max(0, photoFiles.indexOf(src));
+            currentPhoto = Math.max(0, galleryFiles.indexOf(src));
             const img = document.getElementById('fullscreen-img');
-            img.src = encodeURI(photoFiles[currentPhoto]);
+            img.src = encodeURI(galleryFiles[currentPhoto]);
             img.classList.remove('pop');
             void img.offsetWidth; // reinicia la animación
             img.classList.add('pop');
-            document.getElementById('photo-counter').innerText = `${currentPhoto + 1} / ${photoFiles.length}`;
+            document.getElementById('photo-counter').innerText = `${currentPhoto + 1} / ${galleryFiles.length}`;
             document.getElementById('fullscreen-modal').style.display = 'flex';
         }
 
         function stepPhoto(dir) {
-            openFullscreen(photoFiles[(currentPhoto + dir + photoFiles.length) % photoFiles.length]);
+            openFullscreen(galleryFiles[(currentPhoto + dir + galleryFiles.length) % galleryFiles.length]);
         }
 
         function closeFullscreen() {
