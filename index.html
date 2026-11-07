@@ -560,6 +560,19 @@
         .wish-stickers span { display: inline-block; animation: bob 3.5s ease-in-out infinite; filter: drop-shadow(0 4px 6px rgba(0,0,0,.5)); }
         .wish-stickers span:nth-child(even) { animation-delay: -1.7s; }
         .wish-audio { width: calc(100% - 36px); margin: 8px 18px 0; display: block; }
+        .quiz-note { font-size: .9rem; opacity: .85; margin: -4px auto 16px; max-width: 640px; text-align: center; }
+        .coupon-card.locked { filter: saturate(.7); }
+        .coupon-card.dead { opacity: .45; filter: grayscale(1); cursor: not-allowed; }
+        .coupon-card.won { border-style: solid; box-shadow: 0 0 18px rgba(184,242,230,.45); }
+        .coupon-card.used { opacity: .5; }
+        #quiz-modal { display: none; position: fixed; inset: 0; z-index: 20001; background: rgba(0,0,0,.8); align-items: center; justify-content: center; padding: 16px; }
+        .quiz-box { width: 100%; max-width: 420px; padding: 24px 20px; border-radius: 22px; text-align: center; background: linear-gradient(160deg, #2a0a18, #12081d); border: 1px solid rgba(255,143,171,.55); box-shadow: 0 0 40px rgba(255,77,109,.35); }
+        .quiz-count { font-size: .8rem; color: #b8f2e6; margin-bottom: 6px; }
+        .quiz-q { font-size: 1.15rem; margin-bottom: 16px; color: #ffe3ea; }
+        .quiz-opt { display: block; width: 100%; margin: 8px 0; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,143,171,.5); background: rgba(255,143,171,.12); color: #fff0f3; font-size: 1rem; cursor: pointer; }
+        .quiz-opt:active { background: rgba(255,143,171,.35); }
+        .quiz-msg { margin-top: 12px; min-height: 1.4em; font-weight: 600; }
+        .quiz-close { margin-top: 12px; background: none; border: none; color: #ffb3c6; text-decoration: underline; cursor: pointer; font-size: .9rem; }
     </style>
 </head>
 <body>
@@ -674,34 +687,35 @@ Te Lobo 🐺 ♥️
             <!-- Cupones de Amor -->
             <div class="coupon-section">
                 <h2>🎟️ Cupones de Amor Canjeables</h2>
+                <p class="quiz-note">Cada cupón se desbloquea acertando una pregunta. Tienes 2 oportunidades por pregunta… si fallas las dos, ese cupón se bloquea para siempre 😈</p>
                 <div class="coupon-grid">
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una cita en tu restaurante favorito! 🍔')">
+                    <div class="coupon-card" data-q="0" data-msg="¡Valió por una cita en tu restaurante favorito! 🍔" onclick="couponTap(this)">
                         <h4>Cita en tu restaurante favorito</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un masaje relajante y apapachos sin límite! 🥰')">
+                    <div class="coupon-card" data-q="1" data-msg="¡Valió por un masaje relajante y apapachos sin límite! 🥰" onclick="couponTap(this)">
                         <h4>Masaje relajante</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió para elegir la película o serie sin pretextos! 🍿')">
+                    <div class="coupon-card" data-q="2" data-msg="¡Valió para elegir la película o serie sin pretextos! 🍿" onclick="couponTap(this)">
                         <h4>Elegir la película/serie</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un ramo de tulipanes o rosas rosas! 🌷')">
+                    <div class="coupon-card" data-q="3" data-msg="¡Valió por un ramo de tulipanes o rosas rosas! 🌷" onclick="couponTap(this)">
                         <h4>Ramo de tulipanes o rosas rosas</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por una noche de película stop-motion con mantita y palomitas! 🎞️')">
+                    <div class="coupon-card" data-q="4" data-msg="¡Valió por una noche de película stop-motion con mantita y palomitas! 🎞️" onclick="couponTap(this)">
                         <h4>Noche de Coraline / Jack / Novia cadáver</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un día de visitar perritos y gatitos! 🐶🐱')">
+                    <div class="coupon-card" data-q="5" data-msg="¡Valió por un día de visitar perritos y gatitos! 🐶🐱" onclick="couponTap(this)">
                         <h4>Día de perritos y gatitos</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
-                    <div class="coupon-card" onclick="claimCoupon(this, '¡Valió por un maratón de Bob Esponja y Patricio! 🧽⭐')">
+                    <div class="coupon-card" data-q="6" data-msg="¡Valió por un maratón de Bob Esponja y Patricio! 🧽⭐" onclick="couponTap(this)">
                         <h4>Maratón de Bob Esponja</h4>
-                        <p>Toca para canjear</p>
+                        <p>🔒 Responde la pregunta para desbloquear</p>
                     </div>
                 </div>
             </div>
@@ -722,6 +736,14 @@ Te Lobo 🐺 ♥️
             </div>
         </div>
     </div>
+
+    <div id="quiz-modal"><div class="quiz-box">
+        <div class="quiz-count" id="quiz-count"></div>
+        <div class="quiz-q" id="quiz-q"></div>
+        <div id="quiz-opts"></div>
+        <div class="quiz-msg" id="quiz-msg"></div>
+        <button class="quiz-close" onclick="closeQuiz()">Cerrar</button>
+    </div></div>
 
     <!-- Scripts -->
     <script>
@@ -1273,6 +1295,71 @@ Te Lobo 🐺 ♥️
             isPlaying = true;
             document.getElementById("play-music-btn").innerText = "⏸";
         }
+
+        // ===== PREGUNTAS PARA DESBLOQUEAR CUPONES =====
+        // Las respuestas correctas no están en texto claro: solo se guarda su huella (hash).
+        const QUIZ = [
+            { q: 'Frase memorable', o: ['Panga', 'yea yea ugly doll', 'yea yea el muñeco chuky'], h: 1 },
+            { q: '¿En qué año nos conocimos?', o: ['2017', '2015', '2014'], h: 2 },
+            { q: '¿Qué te regalé el primer mes de novios?', o: ['Una muñeca', 'Un dinosaurio', 'Un lobo'], h: 1 },
+            { q: '¿Qué platillo de comida es el más memorable?', o: ['Chilaquiles rellenos', 'Gorditas', 'Quesadillas'], h: 0 },
+            { q: '¿En qué año fuimos a Six Flags por primera vez juntos?', o: ['2020', '2021', '2022'], h: 1 },
+            { q: '¿Qué me regalaste en nuestro primer aniversario?', o: ['Una caja de Call of Duty', 'Unos tenis', 'Tenis de Spiderman'], h: 0 },
+            { q: '¿Qué es lo que más me gusta de tu cuerpo?', o: ['Tus chichis', 'Tus nalgas', 'Tus sentimientos'], h: 1 },
+        ];
+        const quizHash = (i, txt) => { let h = 5381; const t = 'mil' + i + '|' + txt + '|2026'; for (let k = 0; k < t.length; k++) h = ((h << 5) + h + t.charCodeAt(k)) | 0; return h; };
+        QUIZ.forEach((x, i) => { x.h = quizHash(i, x.o[x.h]); });
+
+        const QUIZ_KEY = 'mildred-quiz-v1';
+        const quizState = (() => { try { return JSON.parse(localStorage.getItem(QUIZ_KEY)) || {}; } catch (e) { return {}; } })();
+        const saveQuiz = () => { try { localStorage.setItem(QUIZ_KEY, JSON.stringify(quizState)); } catch (e) {} };
+        const qs = i => quizState[i] || (quizState[i] = { fails: 0, won: false, used: false });
+        let quizCard = null, quizIdx = -1;
+
+        function paintCoupon(card) {
+            const st = qs(+card.dataset.q), p = card.querySelector('p');
+            card.classList.toggle('won', st.won); card.classList.toggle('used', st.used);
+            card.classList.toggle('dead', !st.won && st.fails >= 2); card.classList.toggle('locked', !st.won && st.fails < 2);
+            if (st.used) p.textContent = '¡Canjeado con éxito! ❤️';
+            else if (st.won) p.textContent = '🎁 ¡Desbloqueado! Toca para canjear';
+            else if (st.fails >= 2) p.textContent = '🔒 Bloqueado para siempre';
+            else p.textContent = st.fails ? '🔒 Te queda 1 oportunidad' : '🔒 Responde la pregunta para desbloquear';
+        }
+        document.querySelectorAll('.coupon-card[data-q]').forEach(paintCoupon);
+
+        function couponTap(card) {
+            const i = +card.dataset.q, st = qs(i);
+            if (st.used) return;
+            if (st.won) { st.used = true; saveQuiz(); paintCoupon(card); alert(card.dataset.msg); return; }
+            if (st.fails >= 2) return;
+            quizCard = card; quizIdx = i;
+            const box = document.getElementById('quiz-opts'); box.innerHTML = '';
+            document.getElementById('quiz-count').textContent = `Pregunta ${i + 1} de ${QUIZ.length} · Oportunidades: ${2 - st.fails}`;
+            document.getElementById('quiz-q').textContent = QUIZ[i].q;
+            document.getElementById('quiz-msg').textContent = '';
+            QUIZ[i].o.forEach((txt, k) => {
+                const b = document.createElement('button'); b.className = 'quiz-opt';
+                b.textContent = 'abc'[k] + ') ' + txt; b.onclick = () => answerQuiz(txt);
+                box.appendChild(b);
+            });
+            document.getElementById('quiz-modal').style.display = 'flex';
+        }
+
+        function answerQuiz(txt) {
+            const st = qs(quizIdx), msg = document.getElementById('quiz-msg');
+            document.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+            if (quizHash(quizIdx, txt) === QUIZ[quizIdx].h) {
+                st.won = true; saveQuiz(); paintCoupon(quizCard);
+                msg.textContent = '¡Correcto! 🎉 Cupón desbloqueado';
+                if (window.confetti) confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+                setTimeout(closeQuiz, 1600);
+            } else {
+                st.fails++; saveQuiz(); paintCoupon(quizCard);
+                if (st.fails >= 2) { msg.textContent = 'Incorrecto 💔 Este cupón se bloqueó para siempre'; setTimeout(closeQuiz, 2200); }
+                else { msg.textContent = 'Incorrecto 😬 Te queda 1 oportunidad'; setTimeout(closeQuiz, 1800); }
+            }
+        }
+        function closeQuiz() { document.getElementById('quiz-modal').style.display = 'none'; }
 
         function claimCoupon(element, message) {
             alert(message);
