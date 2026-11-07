@@ -573,6 +573,7 @@
         .quiz-opt:active { background: rgba(255,143,171,.35); }
         .quiz-msg { margin-top: 12px; min-height: 1.4em; font-weight: 600; }
         .quiz-close { margin-top: 12px; background: none; border: none; color: #ffb3c6; text-decoration: underline; cursor: pointer; font-size: .9rem; }
+        .wish-card img.sticker { width: auto; max-width: 70%; max-height: 240px; margin: 18px auto 0; background: #fff; padding: 8px; border-radius: 18px; transform: rotate(-4deg); box-shadow: 0 6px 18px rgba(0,0,0,.55), 0 0 0 3px rgba(255,255,255,.9); }
     </style>
 </head>
 <body>
@@ -1511,6 +1512,12 @@ Saludoskys cordiales 🎩
 
 PD: Intenté hacer un video, pero no me salió. 1000 tomas para un video de 30 segundos, y nomás no se dio. Ya tú sabes por qué 🤣😆
 Dios sabe que lo intenté 😅😉` },
+            { nombre: 'Humberto', relacion: 'Amigo', media: 'Screenshot_20261106_200007_WhatsApp.jpg', tipo: 'foto', sticker: true, mensaje: `¡Feliz cumpleaños Mima! 🥳 Espero que te la pases bombastic y que este nuevo año venga cargado de muchos éxitos y alegrías 🎊 Un abrazo
+PD: ¡Que CMS la cumpleañera!!! 🥴` },
+            { nombre: 'Mariana', relacion: 'Amiga', mensaje: `Holaaa señorita bonita
+Espero le esté gustando mucho esta sorpresa hecha con tanto amor 🤭🫰🏾 y... me gustaría aprovechar para decirte que me alegra muchísimo poder coincidir contigo durante estos años; estoy muy agradecida por todo el cariño y recibimiento que me han dado.
+Eres una chava maravillosa, con un corazón tan grande y lindooo, tienes una energía tan bella que ilumina y alegra la vida de las personas ❤️‍🩹; espero la vida te siga regalando momentos increíbles. Te mando un abrazo enorme, con mis mejores deseos (no solo en este día especial, sino para cada día); nunca pierdas esa vibra tan especial.
+Te quiere marianita ❣️` },
             // { nombre: 'Ana', relacion: 'Amiga', mensaje: 'Feliz cumple, amiga hermosa 🎂', media: 'felicitacion-ana.mp4', tipo: 'video' },
             // { nombre: 'Papá', relacion: 'Familia', mensaje: 'Te quiero muchísimo.', media: 'felicitacion-papa.jpg', tipo: 'foto' },
         ];
@@ -1556,6 +1563,7 @@ Dios sabe que lo intenté 😅😉` },
                 } else if (w.media) {
                     const im = document.createElement('img');
                     im.src = encodeURI(w.media); im.alt = 'Felicitación de ' + w.nombre; im.loading = 'lazy';
+                    if (w.sticker) im.className = 'sticker';
                     card.appendChild(im);
                 }
                 const body = document.createElement('div');
