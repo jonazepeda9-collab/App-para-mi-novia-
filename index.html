@@ -1557,7 +1557,8 @@ Te quiere marianita ❣️` },
                     card.appendChild(a);
                 } else if (w.media && w.tipo === 'video') {
                     const v = document.createElement('video');
-                    v.src = encodeURI(w.media); v.controls = true; v.playsInline = true; v.preload = 'metadata';
+                    v.src = encodeURI(w.media); v.controls = true; v.playsInline = true; v.preload = 'none';
+                    v.poster = encodeURI('poster-' + w.media.replace(/\.[^.]+$/, '') + '.jpg'); // vista previa que no depende de que el celular cargue el video
                     pauseBackgroundWhilePlaying(v);
                     card.appendChild(v);
                 } else if (w.media) {
