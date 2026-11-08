@@ -30,26 +30,6 @@
             position: relative;
         }
 
-        /* Botón de Administrador Discreto */
-        .admin-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 10000;
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-
         /* Pantalla de bloqueo / Cuenta regresiva */
         #lock-screen {
             position: fixed;
@@ -577,9 +557,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Botón Admin Secreto -->
-    <button class="admin-btn" onclick="openAdmin()" title="Panel Admin">⚙️</button>
 
     <!-- Pantalla de Cuenta Regresiva -->
     <div id="lock-screen">
@@ -1643,15 +1620,6 @@ Te quiere marianita ❣️` },
                 document.getElementById("hours").innerText = String(hours).padStart(2, '0');
                 document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
                 document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-            }
-        }
-
-        function openAdmin() {
-            const pass = prompt("Contraseña de administrador:");
-            if (pass === "Milybeb3*") {
-                enterApp();
-            } else if (pass !== null) {
-                alert("Contraseña incorrecta.");
             }
         }
 
